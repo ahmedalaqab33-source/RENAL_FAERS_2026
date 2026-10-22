@@ -1,0 +1,64 @@
+# Private candidate: no hosted execution or public release approval is claimed.
+name: Synthetic QC candidate
+'on':
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: synthetic-qc-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  synthetic:
+    name: Synthetic QC (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    env:
+      LC_ALL: C
+      LANG: C
+      TZ: UTC
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout intended component
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: false
+          lfs: false
+      - name: Set up Python standard library runtime
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+          check-latest: false
+      - name: Set up base R runtime only
+        uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          r-version: '4.6.1'
+          rtools-version: 'none'
+          windows-path-include-rtools: false
+          windows-path-include-mingw: false
+          update-rtools: false
+          use-public-rspm: false
+          Ncpus: '1'
+      - name: Execute exact synthetic CI contract
+        shell: python
+        run: |
+          import os
+          import pathlib
+          import subprocess
+          import sys
+          base = pathlib.Path(os.environ['RUNNER_TEMP'])
+          work = base / 'synthetic_ci_work'
+          work.mkdir(exist_ok=False)
+          if os.name == 'nt' and ' ' in str(work):
+              raise SystemExit('Explicit no-space temporary parent required for Windows R')
+          subprocess.run([
+              sys.executable, '-I', 'tools/ci_bootstrap.py',
+              '--output', str(base / 'synthetic_ci_outputs'),
+              '--work-dir', str(work), '--rscript', 'Rscript'
+          ], check=True)

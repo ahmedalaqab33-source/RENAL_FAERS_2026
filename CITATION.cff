@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+type: software
+title: "Renal Safety Atlas: Synthetic Count QC Demonstration"
+version: "0.1.0"
+authors:
+  - family-names: "Alaqab"
+    given-names: "Ahmed"
+repository-code: "https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026"
+license: MIT
+abstract: "Fixture-only Python and R count validation, numerical parity and reproducibility engineering demonstration. Not a validated FAERS pipeline or clinical prediction system."
