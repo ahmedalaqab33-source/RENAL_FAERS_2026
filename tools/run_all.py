@@ -13,7 +13,7 @@ def main():
         spec=importlib.util.spec_from_file_location('all_qc',ROOT/'tools/release_qc.py');q=importlib.util.module_from_spec(spec);spec.loader.exec_module(q);q.verify_manifest(ROOT,ROOT/'RELEASE_MANIFEST.csv')
         if q.scan(ROOT) or shutil.disk_usage(work).free<268435456:raise ValueError('Security/disk preflight')
         before={p.relative_to(ROOT).as_posix():q.digest(p) for p in ROOT.rglob('*') if p.is_file()};output.mkdir();(output/'logs').mkdir();cwd=output/'unrelated cwd with spaces';cwd.mkdir();commands=[];start=time.monotonic()
-        for name,script in [('count_qc','tools/run_ci.py'),('m1','tests/run_m1.py'),('integration','tests/run_integration.py')]:
+        for name,script in [('count_qc','tools/run_ci.py'),('m1','tests/run_m1.py'),('integration','tests/run_integration.py'),('m2','tests/run_m2_suite.py'),('cross_module','tests/run_cross_module.py')]:
             if time.monotonic()-start>900 or shutil.disk_usage(work).free<268435456:raise ValueError('Total budget/disk reserve')
             cmd=[sys.executable,'-I',str(ROOT/script),'--output',str(output/name),'--work-dir',str(work),'--rscript',r];begin=time.monotonic();kw={'creationflags':subprocess.CREATE_NEW_PROCESS_GROUP} if os.name=='nt' else {'start_new_session':True}
             proc=subprocess.Popen(cmd,cwd=cwd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,**kw)
@@ -26,7 +26,7 @@ def main():
             if proc.returncode:raise ValueError('Integrated suite failed: '+name)
         after={p.relative_to(ROOT).as_posix():q.digest(p) for p in ROOT.rglob('*') if p.is_file()}
         if before!=after:raise ValueError('Source changed')
-        summary=dict(scope='SYNTHETIC ENGINEERING ONLY; PRIVATE INTEGRATION; NO HOSTED ATTESTATION',failures=0,source_preserved=True,count_qc=json.loads((output/'count_qc/CI_SUMMARY.json').read_text()),m1=json.loads((output/'m1/SUMMARY.json').read_text()),integration=json.loads((output/'integration/SUMMARY.json').read_text()))
+        summary=dict(scope='SYNTHETIC ENGINEERING ONLY; PRIVATE INTEGRATION; NO HOSTED ATTESTATION',failures=0,source_preserved=True,count_qc=json.loads((output/'count_qc/CI_SUMMARY.json').read_text()),m1=json.loads((output/'m1/SUMMARY.json').read_text()),integration=json.loads((output/'integration/SUMMARY.json').read_text()),m2=json.loads((output/'m2/SUMMARY.json').read_text()),cross_module=json.loads((output/'cross_module/SUMMARY.json').read_text()))
         (output/'INTEGRATED_SUMMARY.json').write_text(json.dumps(summary,sort_keys=True,indent=2)+'\n');print(json.dumps(summary,sort_keys=True));return 0
     except (ValueError,OSError) as e:print('INTEGRATED_QC_ERROR: '+str(e),file=sys.stderr);return 2
 if __name__=='__main__':raise SystemExit(main())

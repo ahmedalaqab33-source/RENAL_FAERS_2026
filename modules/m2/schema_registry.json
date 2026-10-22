@@ -1,0 +1,75 @@
+{
+  "era_boundary": "legacy through2012Q3;modern2012Q4or2013\u20132025;synthetic schema applicability only",
+  "field_types": {
+    "case": "string-or-null;blank-preserved",
+    "case_id": "string",
+    "case_version": "string",
+    "drug_seq": "string",
+    "era": "string",
+    "foll_seq": "opaque-string-or-null;never-caseversion",
+    "i_f_cod": "string-or-null;blank-preserved",
+    "isr": "string",
+    "kind": "string",
+    "parent_id": "string",
+    "quarter": "integer-not-Boolean",
+    "report_id": "string",
+    "role": "string",
+    "year": "integer-not-Boolean"
+  },
+  "implementation_authority": "Mirror of strict hand-coded engine guards;editing JSON alone does not change supported runtime contracts",
+  "limits": {
+    "batch": 4096,
+    "id_characters": 512,
+    "id_utf8_bytes": 4096,
+    "input_bytes": 33554432,
+    "line_bytes": 16384,
+    "records": 100000,
+    "sqlite_bytes": 268435456
+  },
+  "normalization": "None: exact Unicode/string identity;leading zeros retained;legacyfollowsequence never moderncaseversion",
+  "schema_version": "M2_SYNTHETIC_V1",
+  "schemas": {
+    "legacy_demo": [
+      "era",
+      "kind",
+      "year",
+      "quarter",
+      "isr",
+      "case",
+      "i_f_cod",
+      "foll_seq"
+    ],
+    "legacy_drug": [
+      "era",
+      "kind",
+      "year",
+      "quarter",
+      "parent_id",
+      "drug_seq",
+      "role"
+    ],
+    "modern_demo": [
+      "era",
+      "kind",
+      "year",
+      "quarter",
+      "report_id",
+      "case_id",
+      "case_version"
+    ],
+    "modern_drug": [
+      "era",
+      "kind",
+      "year",
+      "quarter",
+      "parent_id",
+      "drug_seq",
+      "role"
+    ]
+  },
+  "scope": "Entirely synthetic engineering contract;not issuer schema certification",
+  "version_and_sequence": {
+    "canonical_positive_decimal_string": true,
+    "max": 2147483647
+  }
+}

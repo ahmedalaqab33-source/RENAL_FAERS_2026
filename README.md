@@ -2,8 +2,8 @@
 
 Reproducible Python and R software for **synthetic count QC** and **sufficient-statistics data integrity** in pharmacoepidemiology engineering.
 
-The initial 25-file synthetic QC component is public at commit
-`e42ce89c10cf7f0d5b4f8c845a9ffa1bae3067ce`. This **unreleased private integration candidate** adds M1, an authentic contract extraction from the Atlas research code. No public update or hosted CI execution is claimed.
+The QC and M1 baseline is public at commit
+`9cde735a1baa01bfaa4066dce2ef72059f710b74`. This **unreleased private integration candidate** adds the existing bounded M2 streaming/SQLite module. No public M2 update or hosted CI execution is claimed.
 
 **SYNTHETIC / NOT FAERS:** all bundled fixtures are artificial. This executable component does not reproduce the full FAERS ETL, select real cohorts, resolve drug identities, validate signals, estimate patient risk or deploy clinical AI.
 
@@ -12,10 +12,11 @@ The initial 25-file synthetic QC component is public at commit
 | Module | What it does | Evidence boundary |
 |---|---|---|
 | Synthetic count QC | Strict scalar counts, ROR/PRR/Wald arithmetic on artificial tables; zero cells produce undefined estimates | Initial code public; local R/Python tests verified; no hosted CI claim |
-| M1 sufficient-statistics contract | Exact schema, opaque IDs, observed-pair positivity, integer bounds, margins and shared N | Authentic source contract extracted and privately tested; this integration remains unreleased |
+| M1 sufficient-statistics contract | Exact schema, opaque IDs, observed-pair positivity, integer bounds, margins and shared N | Authentic source contract extracted; baseline public; local synthetic tests verified |
+| M2 streaming/SQLite diagnostic | Bounded synthetic JSONL validation, namespace-preserving storage, conservation, quarantine and aggregate linkage diagnostics | Existing module integrated privately; local tests verified; no clinical mapping or production-scale claim |
 | Broader Atlas research | Source harmonization, identity, phenotype sensitivity, external knowledge concordance and exploratory representations | Private and scientifically conditional; not executed by these commands |
 
-M1 does **not** calculate ROR, PRR, Fisher tests, BH/FDR or clinical signals. Both modules check engineering contracts; neither establishes clinical validity or independent human reproduction.
+M1 does **not** calculate ROR, PRR, Fisher tests, BH/FDR or clinical signals. All three modules check engineering contracts; none establishes clinical validity or independent human reproduction.
 
 ## Quick start
 
@@ -64,3 +65,19 @@ See [architecture](docs/ARCHITECTURE.md) for actual executable boundaries. Funct
 Ahmed Alaqab confirmed ownership/licensing authority for both the original M1 source and extraction. [MIT](LICENSE) and [citation metadata](CITATION.cff) retain their confirmed author details. Citation version 0.1.0 is preserved from the baseline; no new release tag, publication date or DOI is invented for this unreleased integration. Software rights do not grant reference-data redistribution or institutional/clinical endorsement.
 
 Scientific, publication and independent-review HOLDs remain. No supervised ML, causal estimation, real cohort reconstruction, reference mapping, manuscript editing or research-data release is performed. The rejected restricted canonical cohort is not reinstated. This is evidence of Clinical Data Engineering, Data Integrity, Statistical Quality Control and Reproducible Research, not a validated clinical product.
+
+
+## Integrated streaming/SQLite module (private candidate)
+
+QC and M1 remain separate from the bounded M2 synthetic streaming diagnostic. M2 preserves TEXT namespaces, physical occurrences and typed missingness; it never selects cases or derives drug ingredients. It requires base Python only; the full inherited verification additionally requires base R. All examples are synthetic, not FAERS.
+
+From the repository root:
+
+```sh
+python -I modules/m2/m2_cli.py generate --output /temporary/new-input --rows 2000 --seed 1729
+python -I modules/m2/m2_cli.py audit --input /temporary/new-input --output /temporary/new-output --work-dir /temporary/existing-work --batch-size 64
+```
+
+Replace paths with new external directories; create the work directory first. Windows accepts equivalent native paths. The combined runner requires a no-space Windows R work path, at least 1 GiB free disk for M2, and writes outside fixtures. Run `python -I tools/ci_bootstrap.py --output NEW_EXTERNAL_OUTPUT --work-dir EXISTING_EXTERNAL_WORK --rscript Rscript`. M2 finding exit 3 differs from processing failure exit 2; only clean complete runs return 0. See modules/m2/CONTRACT.md, PERFORMANCE.md and INTEGRATION_STATUS.md. Existing GitHub Actions invokes this dispatcher, but hosted execution is not certified by local tests.
+
+No real FAERS ETL, approved cohort, clinical prediction, terminology corpus or scientific validation is included. Broader research and publication remain HOLD.
