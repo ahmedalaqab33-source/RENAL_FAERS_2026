@@ -1,113 +1,66 @@
-# Renal Safety Atlas: Synthetic Count QC Demonstration
+# Renal Safety Atlas — Clinical Data Engineering and Statistical QC
 
-**Version 0.1.0 — private final candidate; public release and hosted CI are pending.**
+Reproducible Python and R software for **synthetic count QC** and **sufficient-statistics data integrity** in pharmacoepidemiology engineering.
 
-A small Python and R research-software component for strict count validation,
-explicit undefined states and cross-language numerical quality control.
-**Every bundled example is SYNTHETIC / NOT FAERS.** This component is associated
-with the broader Renal Safety Atlas research project; it is not its full
-analytical pipeline or evidence of scientific validation.
+The initial 25-file synthetic QC component is public at commit
+`e42ce89c10cf7f0d5b4f8c845a9ffa1bae3067ce`. This **unreleased private integration candidate** adds M1, an authentic contract extraction from the Atlas research code. No public update or hosted CI execution is claimed.
 
-## What runs
+**SYNTHETIC / NOT FAERS:** all bundled fixtures are artificial. This executable component does not reproduce the full FAERS ETL, select real cohorts, resolve drug identities, validate signals, estimate patient risk or deploy clinical AI.
 
-```text
-Manifest-bound synthetic CSV (read-only)
-  -> Python coordinator
-  -> Python metrics + base-R worker
-  -> parity and conservation checks
-  -> new external CSV / JSON / output manifest
-```
+## Modules and maturity
 
-The functions calculate descriptive ROR, PRR and positive-cell Wald bounds for
-artificial 2x2 tables. The runner accepts only the bundled named fixtures, not
-arbitrary clinical data paths. It performs no dataset downloads or terminology
-queries. See [count contract](docs/COUNT_CONTRACT.md).
+| Module | What it does | Evidence boundary |
+|---|---|---|
+| Synthetic count QC | Strict scalar counts, ROR/PRR/Wald arithmetic on artificial tables; zero cells produce undefined estimates | Initial code public; local R/Python tests verified; no hosted CI claim |
+| M1 sufficient-statistics contract | Exact schema, opaque IDs, observed-pair positivity, integer bounds, margins and shared N | Authentic source contract extracted and privately tested; this integration remains unreleased |
+| Broader Atlas research | Source harmonization, identity, phenotype sensitivity, external knowledge concordance and exploratory representations | Private and scientifically conditional; not executed by these commands |
 
-## Prerequisites and installation
+M1 does **not** calculate ROR, PRR, Fisher tests, BH/FDR or clinical signals. Both modules check engineering contracts; neither establishes clinical validity or independent human reproduction.
 
-Use Python 3.12 and R 4.6.1 with an accessible `Rscript` executable. Only Python's
-standard library and base R are needed: no pip or R package installation is
-required. Place the exact manifest-bound component in a local directory and
-make Python/Rscript available on PATH, or supply Rscript explicitly.
+## Quick start
 
-Actual local execution was tested on Windows with Python 3.12.14 and R 4.6.1.
-The draft workflow targets Windows 2022 and Ubuntu 24.04; hosted Windows/Linux,
-other runtime versions and clean-environment execution are not yet verified.
-No passing hosted-CI badge is claimed.
+Use Python 3.12 and R 4.6.1, with `Rscript` on PATH or supplied explicitly. Only the Python standard library and base R are required; no pip or R package installation is needed. Local verification uses Windows, Python 3.12.14 and R 4.6.1. Linux and hosted Windows remain unverified.
 
-## Run the demonstration
-
-From the component root, with an existing writable parent and a new destination:
+Run from the component root, choosing a new external output directory whose parent exists:
 
 ```text
-python -I run_demo.py --output ../demo-output --rscript Rscript
+python -I run_demo.py --output ../count-demo-output --rscript Rscript
+python -I run_m1_demo.py --output ../m1-demo-output --work-dir <existing-external-work-parent> --rscript Rscript
 ```
 
-Select the other bundled example with `--fixture synthetic_counts.csv` and a
-different new output directory. Quote an installed executable path containing
-spaces when supplying `--rscript`. From another working directory, supply the
-script path and explicit output location. Existing destinations are rejected.
+On Windows the explicit R work parent must contain no spaces. Quote interpreter/path arguments when needed. Component and output paths may contain spaces when a valid external work parent is supplied. No silent temporary-directory redirection is used. Destinations must be new and outside the source tree.
 
-On Windows, R may fail before loading a script if its temporary parent contains
-spaces. Supply `--work-dir <existing-external-no-space-directory>` when needed.
-The work parent must be outside the component, without ancestor overlap; the
-runner rejects unsafe paths rather than silently redirecting temporary files.
-See [reproduction guide](docs/REPRODUCE_DEMO.md) for exact path and exit contracts.
+The count demo writes synthetic metric CSV/JSON and a manifest. The M1 demo calls the actual Python and R validators on the single bundled artificial fixture, verifies IDs, margins and N across languages, and writes `m1_validation.json` plus `OUTPUT_MANIFEST.csv`. It accepts no arbitrary dataset path and hard-codes no expected result table.
 
-Outputs are `synthetic_results.csv`, `summary.json` and `OUTPUT_MANIFEST.csv`.
-They are synthetic engineering examples, not findings about drugs or patients.
-Repeat runs on the same runtime are tested for byte/hash equality; cross-platform
-bitwise equality is not promised. Outputs contain no timestamps or personal paths.
+## Two explicit contracts
 
-## Input and numerical contract
+| Rule | Count QC | M1 |
+|---|---|---|
+| Counts | Plain finite nonnegative integer-valued scalars | Plain finite nonnegative integer-valued table columns/values |
+| Bounds | Each cell and total <= 2^53-1 | Each count, margin and total <= 2^53-1; addition guarded before evaluation |
+| `a=0` | Accepted; association values undefined | Rejected: historical observed-pair contract requires `a>0` |
+| `b`, `c` or `d` zero | Accepted; association values undefined | Structurally accepted; no association estimates computed |
+| Missing/Boolean/classed values | Rejected | Rejected; no silent coercion or imputation |
+| IDs and margins | Not part of scalar API | Unique opaque string `pair_id`; exact `a+b=n_drug`, `a+c=n_event`; one shared N |
 
-- Four plain finite, nonnegative integer-valued counts; Boolean/logical values,
-  missing values, fractions, nonfinite values and ambiguous coercions are rejected.
-- Every cell and total must be <= 2^53-1 (9007199254740991). The CSV interface
-  accepts canonical unsigned decimal integers and unique synthetic labels only.
-- Zero cells are accepted, but all association estimates remain UNDEFINED:
-  unknown is never converted to FALSE or to a zero effect.
-- Exact counts/states must agree; numerical comparisons use absolute and relative
-  tolerance 1e-12. No continuity correction or multiplicity adjustment is added.
+See [count contract](docs/COUNT_CONTRACT.md), [M1 API](docs/M1_CONTRACT.md) and [source provenance](docs/SOURCE_PROVENANCE.md). Numeric-looking IDs stay strings; rows are not independent patients or cases. M1 rejects empty tables and extra schema fields.
 
-## Tests and local CI reproduction
-
-Run the complete suite using the same bootstrap as the manual workflow:
+## Reproduce all local checks
 
 ```text
 python -I tools/ci_bootstrap.py --output <new-external-output> --work-dir <existing-external-work-parent> --rscript Rscript
 ```
 
-Use an explicit no-space work parent on Windows. The bootstrap checks the whole
-manifest, copies only listed files into temporary isolated content and invokes
-the existing functions. It does not initialize or inspect Git credentials.
-The suite includes 13 original Python tests, 90 strict-count Python tests,
-89 R cases, 36 runner tests and 8 CI-guard tests; it compares 15 original metrics,
-89 classifications, 40 accepted outputs and 3 repeated output hashes. These
-categories are separate; they are not a single scientific validation score.
+The bootstrap verifies the complete manifest, copies only its listed content to a temporary component path with spaces, and invokes `tools/run_all.py`. The dispatcher runs the unchanged count suite, complete M1 suite and coexistence/demo tests. Logs are external local diagnostics, not proposed export files.
 
-See [CI contract](docs/CI_CONTRACT.md) and the
-[manual workflow](.github/workflows/synthetic-qc.yml). Workflow permissions are
-read-only, actions are commit-pinned, and no artifacts are uploaded. Workflow
-activation requires separate approval. File isolation is not a fresh OS or
-independent human replication. Local logs stay outside this export tree.
+Test categories stay separate: count QC has 13 original Python tests, 90 contract Python tests, 89 R cases, 36 runner tests and 8 CI guards; 15 metric, 89 classification, 40 numeric output comparisons and 3 repeated hashes. M1 has 65 shared cases in each language, 15 Python-native and 16 R-native cases, and 186 exact parity comparisons. Integration adds Python coexistence/failure tests, eight R coexistence checks and repeated M1 demo outputs. These counts are not a scientific validation score.
 
-## Scope and limitations
+The [manual workflow](.github/workflows/synthetic-qc.yml) keeps its existing pinned actions, read-only permissions, Windows/Ubuntu targets and no-upload policy. Its bootstrap now selects the combined dispatcher. Workflow dispatch requires separate authorization; no passing badge or clean-environment success is asserted. See [CI contract](docs/CI_CONTRACT.md).
 
-This release candidate does not execute the full FAERS Atlas ETL, report/case
-selection, drug identity recovery, real exposure/cohort construction, signal
-recomputation, clinical prediction or phenotype adjudication. It contains no
-real FAERS records, licensed terminology, reference crosswalks or scientific
-manuscript results. Synthetic arithmetic checks do not establish clinical
-validity, causation, incidence or patient risk. Broader scientific, publication
-and independent-review restrictions remain unchanged. See
-[presentation scope](docs/PRESENTATION_SCOPE.md).
+## Architecture, rights and limitations
 
-## License and citation
+See [architecture](docs/ARCHITECTURE.md) for actual executable boundaries. Functions do not load research data; fixture adapters read only bundled synthetic inputs. Outputs are deterministic on the tested runtime; cross-platform byte identity is not claimed.
 
-The rights owner authorized [MIT](LICENSE), copyright 2026 Ahmed Alaqab, for
-this private software candidate. The license does not confer rights to external
-data, reference vocabularies, clinical use or institutional endorsement.
-Software citation metadata is in [CITATION.cff](CITATION.cff). No DOI, journal
-publication, affiliation or public release date is asserted. Public commit,
-push and release of this exact candidate remain subject to explicit approval.
+Ahmed Alaqab confirmed ownership/licensing authority for both the original M1 source and extraction. [MIT](LICENSE) and [citation metadata](CITATION.cff) retain their confirmed author details. Citation version 0.1.0 is preserved from the baseline; no new release tag, publication date or DOI is invented for this unreleased integration. Software rights do not grant reference-data redistribution or institutional/clinical endorsement.
+
+Scientific, publication and independent-review HOLDs remain. No supervised ML, causal estimation, real cohort reconstruction, reference mapping, manuscript editing or research-data release is performed. The rejected restricted canonical cohort is not reinstated. This is evidence of Clinical Data Engineering, Data Integrity, Statistical Quality Control and Reproducible Research, not a validated clinical product.

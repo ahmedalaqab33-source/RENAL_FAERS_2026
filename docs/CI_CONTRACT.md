@@ -19,3 +19,8 @@ python -I tools/ci_bootstrap.py --output <new-external-output> --work-dir <exist
 ```
 
 CI_SUMMARY.json describes only that execution's synthetic scope,not GitHub provenance. Test command logs may contain environment-specific paths and are local temporary diagnostics;the workflow uploads no artifacts. A genuine hosted PASS needs an authentic run URL,commit identity,platform/runtime versions,full job result and recorded failures. CLEAN_ENVIRONMENT_NOT_TESTED remains until such execution exists. No badge,publication clearance or independent scientific review is conferred by a draft or same-host run.
+
+
+## Private M1 integration context
+
+The initial synthetic QC baseline is already public. This new integration remains private and awaits exact-tree update approval. Both code scopes have owner-confirmed MIT-compatible rights. Existing count algorithms and workflow policies are unchanged. M1 has a distinct observed-pair a>0 contract; see M1_CONTRACT.md and ARCHITECTURE.md. The bootstrap now invokes tools/run_all.py to include the existing suite, complete M1 suite and integration checks. Hosted CI is not claimed.

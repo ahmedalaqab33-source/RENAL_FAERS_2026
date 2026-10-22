@@ -1,0 +1,4 @@
+pair_id,a,b,c,d,n_drug,n_event
+SYN_M1_A,10,90,20,880,100,30
+SYN_M1_ZERO_B,1,0,4,995,1,5
+SYN_M1_ZERO_C,5,5,0,990,10,5

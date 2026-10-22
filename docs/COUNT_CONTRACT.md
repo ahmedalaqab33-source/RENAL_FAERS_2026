@@ -13,3 +13,8 @@ ROR=(a*d)/(b*c); PRR=[a/(a+b)]/[c/(c+d)]. The strictly positive-cell Wald bounds
 contract_cases.csv contains artificial type/value test definitions, not observations. Each language independently decodes its own native representation; typed missing variants map to None in Python and distinct R NA types. A separate Python-only test rejects an arbitrary-precision integer beyond the shared numeric range.
 
 Use only the component file manifest as an intended export allowlist. Ownership and MIT licensing are owner-confirmed for this private candidate; public distribution approval remains pending; successful synthetic tests do not authorize publication.
+
+
+## Private M1 integration context
+
+The initial synthetic QC baseline is already public. This new integration remains private and awaits exact-tree update approval. Both code scopes have owner-confirmed MIT-compatible rights. Existing count algorithms and workflow policies are unchanged. M1 has a distinct observed-pair a>0 contract; see M1_CONTRACT.md and ARCHITECTURE.md. The bootstrap now invokes tools/run_all.py to include the existing suite, complete M1 suite and integration checks. Hosted CI is not claimed.

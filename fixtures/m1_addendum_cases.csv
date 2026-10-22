@@ -1,0 +1,3 @@
+case_id,expected_status,expected_error,variant,rows,expected_N,expected_rows
+id_final_newline,REJECT,M1_E_ID,normal,nl:SYN_A;n:10;n:90;n:20;n:880;n:100;n:30,,
+id_final_carriage,REJECT,M1_E_ID,normal,cr:SYN_A;n:10;n:90;n:20;n:880;n:100;n:30,,

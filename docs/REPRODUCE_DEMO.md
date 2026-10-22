@@ -23,3 +23,8 @@ CSV is UTF-8 with LF newlines, preserved fixture order and explicit UNDEFINED to
 Exit 0 means scoped synthetic success; exit 2 indicates bad inputs, component integrity, paths or missing interpreter; exit 3 is worker execution failure; exit 4 is parity/conservation failure. Failed runs have no successful summary; an empty output directory may remain after a worker failure.
 
 Ownership and MIT licensing are owner-confirmed for this private candidate; public distribution approval remains pending. Export only the reviewed component subtree, never private staging reports or audit logs. A Day 4 CI handoff is not a successful CI run.
+
+
+## Private M1 integration context
+
+The initial synthetic QC baseline is already public. This new integration remains private and awaits exact-tree update approval. Both code scopes have owner-confirmed MIT-compatible rights. Existing count algorithms and workflow policies are unchanged. M1 has a distinct observed-pair a>0 contract; see M1_CONTRACT.md and ARCHITECTURE.md. The bootstrap now invokes tools/run_all.py to include the existing suite, complete M1 suite and integration checks. Hosted CI is not claimed.

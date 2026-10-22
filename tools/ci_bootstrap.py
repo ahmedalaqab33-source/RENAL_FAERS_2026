@@ -34,6 +34,6 @@ def main():
         if not shutil.which(args.rscript):raise ValueError('Mandatory Rscript unavailable')
         with tempfile.TemporaryDirectory(prefix='synthetic_ci_',dir=work) as tmp:
             component=Path(tmp)/'component with spaces';rwork=Path(tmp)/'r_work';rwork.mkdir();stage_component(ROOT,component)
-            return subprocess.run([sys.executable,'-I',str(component/'tools/run_ci.py'),'--output',str(out),'--work-dir',str(rwork),'--rscript',args.rscript],check=False).returncode
+            return subprocess.run([sys.executable,'-I',str(component/'tools/run_all.py'),'--output',str(out),'--work-dir',str(rwork),'--rscript',args.rscript],check=False).returncode
     except (ValueError,OSError,KeyError,csv.Error):print('SYNTHETIC_BOOTSTRAP_ERROR: integrity,source scope,path or interpreter check failed',file=sys.stderr);return 2
 if __name__=='__main__':raise SystemExit(main())
