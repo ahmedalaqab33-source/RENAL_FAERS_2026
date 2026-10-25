@@ -23,7 +23,10 @@ def main():
                 else:os.killpg(proc.pid,signal.SIGKILL)
                 proc.communicate();raise ValueError('Integrated command timeout')
             (output/'logs'/(name+'.log')).write_text(text,encoding='utf-8');commands.append(dict(label=name,command=cmd,exit=proc.returncode,seconds=time.monotonic()-begin));(output/'executed_commands.json').write_text(json.dumps(commands,indent=2))
-            if proc.returncode:raise ValueError('Integrated suite failed: '+name)
+            if proc.returncode:
+                print('FAILED_SUITE: '+name+' EXIT='+str(proc.returncode),file=sys.stderr)
+                print('FAILED_SUITE_LOG_TAIL:\n'+text[-6000:],file=sys.stderr)
+                raise ValueError('Integrated suite failed: '+name)
         after={p.relative_to(ROOT).as_posix():q.digest(p) for p in ROOT.rglob('*') if p.is_file()}
         if before!=after:raise ValueError('Source changed')
         summary=dict(scope='SYNTHETIC ENGINEERING ONLY; PRIVATE INTEGRATION; NO HOSTED ATTESTATION',failures=0,source_preserved=True,count_qc=json.loads((output/'count_qc/CI_SUMMARY.json').read_text()),m1=json.loads((output/'m1/SUMMARY.json').read_text()),integration=json.loads((output/'integration/SUMMARY.json').read_text()),m2=json.loads((output/'m2/SUMMARY.json').read_text()),cross_module=json.loads((output/'cross_module/SUMMARY.json').read_text()))

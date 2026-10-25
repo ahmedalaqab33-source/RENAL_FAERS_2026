@@ -51,14 +51,20 @@ jobs:
           import os
           import pathlib
           import subprocess
+          import shutil
           import sys
           base = pathlib.Path(os.environ['RUNNER_TEMP'])
           work = base / 'synthetic_ci_work'
           work.mkdir(exist_ok=False)
           if os.name == 'nt' and ' ' in str(work):
               raise SystemExit('Explicit no-space temporary parent required for Windows R')
+          rscript = shutil.which('Rscript') or shutil.which('Rscript.exe')
+          if not rscript:
+              raise SystemExit('CI_PREFLIGHT: Rscript missing from PATH')
+          print('CI_PREFLIGHT: Rscript resolved', flush=True)
+          print('CI_PREFLIGHT: Python ' + sys.version.split()[0], flush=True)
           subprocess.run([
               sys.executable, '-I', 'tools/ci_bootstrap.py',
               '--output', str(base / 'synthetic_ci_outputs'),
-              '--work-dir', str(work), '--rscript', 'Rscript'
+              '--work-dir', str(work), '--rscript', rscript
           ], check=True)
