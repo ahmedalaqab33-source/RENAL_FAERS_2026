@@ -1,0 +1,27 @@
+name: Project metrics validation
+on:
+  pull_request:
+    paths:
+      - 'tools/build_project_metrics.py'
+      - 'tests/test_project_metrics.py'
+      - '.github/workflows/project-metrics-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  aggregate-metrics-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntax validation
+        run: python -m py_compile tools/build_project_metrics.py tests/test_project_metrics.py
+      - name: Offline aggregate-only unit tests
+        run: python -m unittest discover -s tests -p 'test_project_metrics.py' -v

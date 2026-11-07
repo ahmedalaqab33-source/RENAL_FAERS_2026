@@ -1,5 +1,8 @@
 # Renal Safety Atlas — Clinical Data Engineering and Statistical QC
 
+> **Clinical Data Science research program:** The broader local Renal FAERS project targets **2004–2026 (23 calendar years; 2026 YTD)** across **DEMO, DRUG and REAC**, including data harmonization, frozen/master layers, lineage QA and planned pharmacovigilance analysis. **This public repository is the synthetic QC / data-engineering component, not the complete real-FAERS analysis pipeline or a certified scientific release.** See [Project scope, workstreams and evidence status](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
+
+
 Reproducible Python and R software for **synthetic count QC** and **sufficient-statistics data integrity** in pharmacoepidemiology engineering.
 
 The QC and M1 baseline is public at commit
