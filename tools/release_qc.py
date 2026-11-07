@@ -21,7 +21,7 @@ def scan(root):
         if p.is_symlink():findings.append((str(p.relative_to(root)),'SYMLINK'));continue
         if not p.is_file():continue
         rel=p.relative_to(root).as_posix();secure_relative(rel)
-        if p.suffix not in ALLOWED and p.name!='LICENSE' and rel!='.github/workflows/synthetic-qc.yml':findings.append((rel,'DISALLOWED_TYPE'));continue
+        if p.suffix not in ALLOWED and rel not in {'LICENSE','.gitattributes','.github/workflows/synthetic-qc.yml','.github/workflows/project-metrics-validation.yml'}:findings.append((rel,'DISALLOWED_TYPE'));continue
         if p.stat().st_size>2097152:findings.append((rel,'SIZE_LIMIT'));continue
         try:t=p.read_text(encoding='utf-8-sig')
         except UnicodeError:findings.append((rel,'ENCODING'));continue

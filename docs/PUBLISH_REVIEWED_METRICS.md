@@ -11,11 +11,11 @@ Each row must be supported by a separately retained, independently reviewed loca
 From the repository root:
 
 ```bash
-python -m unittest discover -s tests -p 'test_project_metrics.py'
-python tools/build_project_metrics.py --input reviewed_aggregates.csv --output project_metrics_preview.md
+python -B -m unittest discover -s tests -p 'test_project_metrics.py'
+python -B tools/build_project_metrics.py --input reviewed_aggregates.csv --output ../project_metrics_preview.md
 ```
 
-The script rejects unexpected columns, duplicate year/table/layer combinations, malformed counts, and unsafe reviewer/evidence tokens. It produces Markdown locally; it **does not push to GitHub**. Inspect the output, confirm evidence/permissions and then separately decide whether to publish it.
+The script rejects unexpected columns (including extra fields on individual rows), duplicate year/table/layer combinations, malformed counts, and unsafe reviewer/evidence tokens. Years and counts use ASCII digits. The output must be a new file; existing artifacts are never overwritten. Keep previews outside the manifest-controlled checkout. It produces Markdown locally; it **does not push to GitHub**. Inspect the output, confirm evidence/permissions and then separately decide whether to publish it. Tokens are syntactic checks, not proof that independent review occurred.
 
 Do not treat a local FAERS_07 audit run with zero authority-selected files as a verified volume source. Use existing previously reviewed QC manifests only after reconciling their precise scope and authority. The 23-year figure describes the **target calendar-year range**, not 23 certified complete annual cohorts.
 

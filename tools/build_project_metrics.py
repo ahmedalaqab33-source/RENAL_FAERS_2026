@@ -39,14 +39,16 @@ def render(input_path: pathlib.Path) -> str:
     seen = set()
     parsed = []
     for row in rows:
+        if set(row) != set(FIELDS):
+            raise ValueError("Unexpected field in CSV row")
         if any(value is None for value in row.values()):
             raise ValueError("Missing field")
         year_s, table, count_s, scope, reviewer, evidence = [row[k].strip() for k in FIELDS]
-        if not (year_s.isdecimal() and 2004 <= int(year_s) <= 2026):
+        if not (re.fullmatch(r"[0-9]{4}", year_s) and 2004 <= int(year_s) <= 2026):
             raise ValueError("Invalid year")
         if table not in TABLES or scope not in LAYERS:
             raise ValueError("Invalid table or layer")
-        if not count_s.isdecimal():
+        if not re.fullmatch(r"[0-9]+", count_s):
             raise ValueError("Record count must be a nonnegative integer")
         if not TOKEN.fullmatch(reviewer) or not TOKEN.fullmatch(evidence):
             raise ValueError("Reviewer/evidence fields require short opaque tokens")
@@ -70,7 +72,7 @@ def render(input_path: pathlib.Path) -> str:
         lines.append(f"| {year} | {table} | {layer} | {count:,} | {evidence} | {reviewer} |")
     lines += [
         "",
-        f"**Verified-input entries provided:** {len(parsed)} / 207 possible year/table/layer slots.",
+        f"**Reviewed-input entries supplied:** {len(parsed)} / 207 possible year/table/layer slots.",
         "",
         "**Interpretation:** Counts are layer-specific and MUST NOT be summed across",
         "SOURCE/FROZEN/MASTER as if they were distinct patients or reports.",
@@ -91,7 +93,8 @@ def main():
     try:
         result = render(args.input)
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(result, encoding="utf-8")
+        with args.output.open("x", encoding="utf-8") as handle:
+            handle.write(result)
     except (OSError, ValueError, csv.Error) as exc:
         parser.exit(1, f"Validation failed: {exc}\n")
     print(f"Created local reviewed-metrics preview: {args.output}")

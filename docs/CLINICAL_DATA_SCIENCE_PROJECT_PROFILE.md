@@ -55,3 +55,13 @@ The **broader private research program**, once supported by reviewed execution l
 6. Obtain scientific sign-off separately from code/CI success.
 
 **Current public scientific-release status: NOT CERTIFIED.** This document is a transparent scope and evidence map, not a claim of completed production deployment.
+
+## Separate readiness gates — 2026-11-07
+
+| Gate | Status | Executed evidence and limits |
+| --- | --- | --- |
+| SOFTWARE_READY | PASS | Scoped to the Windows synthetic component: full `tools/ci_bootstrap.py` execution with Python 3.14.7 / R 4.6.1; count QC, M1, M2, integration, cross-language parity and reproducibility checks pass. This is not a real-data production qualification. |
+| DATA_READY | HOLD | FAERS_07 authority template contains no selected inputs. A targeted read of three 2006 DEMO candidates confirms readable structures but missing case identifiers in the MASTER candidate. Historical contributor replay and legacy selection policy remain unresolved. |
+| SCIENTIFIC_READY | HOLD | The existing private signal script uses candidate-filtered Fisher tests followed by BH adjustment; the testing family needs protocol review before any global FDR claim. Lineage, cohort/denominator approval and independent scientific review remain required. No new real-data signal analysis was executed. |
+
+The local SOURCE candidate in the 2006 check is an already harmonized RDS artifact, not independently verified original FDA source material. Structural checks and before/after byte preservation do not establish historical authority. No unreviewed local record counts are published as certified project-scale metrics.
