@@ -1,4 +1,4 @@
-# Renal Safety Atlas — Clinical Data Engineering and Statistical QC
+# RENAL FAERS 2026 — Longitudinal Clinical Data Science and Reproducible Healthcare Data Engineering
 
 > **Clinical Data Science research program:** The broader local Renal FAERS project targets **2004–2026 (23 calendar years; 2026 YTD)** across **DEMO, DRUG and REAC**, including data harmonization, frozen/master layers, lineage QA and planned pharmacovigilance analysis. **This public repository is the synthetic QC / data-engineering component, not the complete real-FAERS analysis pipeline or a certified scientific release.** See [Project scope, workstreams and evidence status](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
 
@@ -6,7 +6,7 @@
 Reproducible Python and R software for **synthetic count QC** and **sufficient-statistics data integrity** in pharmacoepidemiology engineering.
 
 The QC and M1 baseline is public at commit
-`9cde735a1baa01bfaa4066dce2ef72059f710b74`. This **unreleased private integration candidate** adds the existing bounded M2 streaming/SQLite module. No public M2 update or hosted CI execution is claimed.
+`9cde735a1baa01bfaa4066dce2ef72059f710b74`. The current integration component includes the bounded M2 streaming/SQLite module. Its tests demonstrate synthetic engineering behavior; they do not certify the private research pipeline.
 
 **SYNTHETIC / NOT FAERS:** all bundled fixtures are artificial. This executable component does not reproduce the full FAERS ETL, select real cohorts, resolve drug identities, validate signals, estimate patient risk or deploy clinical AI.
 
@@ -23,7 +23,7 @@ M1 does **not** calculate ROR, PRR, Fisher tests, BH/FDR or clinical signals. Al
 
 ## Quick start
 
-Use Python 3.12 and R 4.6.1, with `Rscript` on PATH or supplied explicitly. Only the Python standard library and base R are required; no pip or R package installation is needed. Local verification uses Windows, Python 3.12.14 and R 4.6.1. Linux and hosted Windows remain unverified.
+The hosted workflow specifies Python 3.12 and R 4.6.1, with `Rscript` on PATH or supplied explicitly. Only the Python standard library and base R are required; no pip or R package installation is needed. The 2026-11-07 full local verification used Windows, Python 3.14.7 and R 4.6.1. This run does not verify Linux or hosted Windows.
 
 Run from the component root, choosing a new external output directory whose parent exists:
 
@@ -59,7 +59,11 @@ The bootstrap verifies the complete manifest, copies only its listed content to 
 
 Test categories stay separate: count QC has 13 original Python tests, 90 contract Python tests, 89 R cases, 36 runner tests and 8 CI guards; 15 metric, 89 classification, 40 numeric output comparisons and 3 repeated hashes. M1 has 65 shared cases in each language, 15 Python-native and 16 R-native cases, and 186 exact parity comparisons. Integration adds Python coexistence/failure tests, eight R coexistence checks and repeated M1 demo outputs. These counts are not a scientific validation score.
 
-The [manual workflow](.github/workflows/synthetic-qc.yml) keeps its existing pinned actions, read-only permissions, Windows/Ubuntu targets and no-upload policy. Its bootstrap now selects the combined dispatcher. Workflow dispatch requires separate authorization; no passing badge or clean-environment success is asserted. See [CI contract](docs/CI_CONTRACT.md).
+The [manual workflow](.github/workflows/synthetic-qc.yml) keeps its existing pinned actions, read-only permissions, Windows/Ubuntu targets and no-upload policy. Its bootstrap selects the combined dispatcher. The separate [project metrics workflow run 42334289294](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42334289294) succeeded for PR #1 at `7572648`; that result covers the earlier five metrics tests only. Full hosted integration remains NOT_TESTED for this change. See [CI contract](docs/CI_CONTRACT.md).
+
+The full local dispatcher also runs ten aggregate-publisher tests. These reject extra CSV row fields and protect existing output artifacts. The release manifest covers the complete checkout excluding Git metadata; the content screen permits only the two explicitly named workflows. Regenerate and review the manifest after any source change before running the bootstrap.
+
+The repository's `.gitattributes` preserves exact bytes across checkouts, preventing line-ending conversion from invalidating release hashes. Historical [run 40162390177](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/40162390177) failed with a Windows source-manifest mismatch and an Ubuntu runner-suite failure. The historical Ubuntu log does not identify the failing assertion; bounded child-log tails now surface future failures. Neither platform is certified by the local Windows run.
 
 ## Architecture, rights and limitations
 
@@ -70,7 +74,7 @@ Ahmed Alaqab confirmed ownership/licensing authority for both the original M1 so
 Scientific, publication and independent-review HOLDs remain. No supervised ML, causal estimation, real cohort reconstruction, reference mapping, manuscript editing or research-data release is performed. The rejected restricted canonical cohort is not reinstated. This is evidence of Clinical Data Engineering, Data Integrity, Statistical Quality Control and Reproducible Research, not a validated clinical product.
 
 
-## Integrated streaming/SQLite module (private candidate)
+## Integrated streaming/SQLite module
 
 QC and M1 remain separate from the bounded M2 synthetic streaming diagnostic. M2 preserves TEXT namespaces, physical occurrences and typed missingness; it never selects cases or derives drug ingredients. It requires base Python only; the full inherited verification additionally requires base R. All examples are synthetic, not FAERS.
 
