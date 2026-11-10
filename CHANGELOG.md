@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased — portfolio publication candidate, 2026-11-10
+## Unreleased â€” portfolio publication candidate, 2026-11-10
 
 - Reuses draft PRs #1 and #2: project profile, strict aggregate publisher, regression coverage and exact-byte checkout policy.
 - Preserves the latest validated Claude release commits, including the Unix Rscript path-with-spaces fix.
 - Adds engineering case study, sanitized scale evidence, capability and reproducibility navigation, research HOLDs, contribution and security guidance.
+- Fixes direct demo verification in normal Git checkouts and records passing hosted Windows/Ubuntu and aggregate-metrics runs.
 - Preserves scientific approval gates and historical artifacts. No new research analysis or full FAERS processing run is performed.
 
 ## Existing public history

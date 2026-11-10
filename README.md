@@ -1,10 +1,10 @@
 # Renal Safety Atlas
 
-**Clinical data engineering for renal pharmacovigilance — with a public synthetic Python/R validation toolkit.**
+**Clinical data engineering for renal pharmacovigilance â€” with a public synthetic Python/R validation toolkit.**
 
 Renal Safety Atlas investigates how report identity, follow-up versions, ingredient representation and terminology affect reproducible FAERS research. This repository exposes the tested engineering contracts and documents the scale of the private research pipeline. Clinical interpretation and manuscript publication remain on HOLD.
 
-Author: Ahmed Alaqab · Licence: [MIT](LICENSE) · Cite: [CITATION.cff](CITATION.cff)
+Author: Ahmed Alaqab آ· Licence: [MIT](LICENSE) آ· Cite: [CITATION.cff](CITATION.cff)
 
 > **What is public here:** tested Python and base-R quality-control software, run on **synthetic data only**.
 >
@@ -19,7 +19,7 @@ Author: Ahmed Alaqab · Licence: [MIT](LICENSE) · Cite: [CITATION.cff](CITATION
 | Question | Answer |
 |---|---|
 | **Problem** | FAERS disproportionality analyses are routinely distorted by duplicate follow-up versions, deleted cases, inconsistent drug identities, changing MedDRA terminology and multiple-testing shortcuts |
-| **Real-scale work (private)** | 22 years (2004–2025); 66 frozen, hash-verified partitions; **197,651,666 table rows**; [sanitized annual evidence](docs/SCALE_EVIDENCE.csv) |
+| **Real-scale work (private)** | 22 years (2004â€“2025); 66 frozen, hash-verified partitions; **197,651,666 table rows**; [sanitized annual evidence](docs/SCALE_EVIDENCE.csv) |
 | **Engineering implemented** | Global case-version selection; FDA deleted-case lists; drug ingredient and salt harmonisation; renal terminology era effects; bounded-memory, restartable execution; explicit pilot BH-FDR families; integer-overflow and bootstrap-failure defects |
 | **Independently verified** | Population counts, contingency tables, ROR/PRR/CI, FDR and bootstrap: **481/481 checks** between two independent implementations on real data |
 | **Provisional** | Clinical endpoint definitions, salt policy, deleted-case policy, drug-mapping accuracy review. All are pending human decisions |
@@ -48,7 +48,7 @@ flowchart LR
   end
 ```
 
-More detail: [architecture](docs/ARCHITECTURE.md) · [methodology](docs/METHODOLOGY.md) · [limitations](docs/LIMITATIONS.md) · [project profile](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
+More detail: [architecture](docs/ARCHITECTURE.md) آ· [methodology](docs/METHODOLOGY.md) آ· [limitations](docs/LIMITATIONS.md) آ· [project profile](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
 
 ## Quick start (synthetic)
 
@@ -81,12 +81,12 @@ These counts describe test coverage. They are not a scientific validation score.
 
 **Checkout integrity:** use a fresh clone if switching from a historical branch causes a manifest mismatch. Preserve local work. See [reproducibility](docs/REPRODUCIBILITY.md).
 
-**Hosted CI:** the manual Synthetic QC workflow failed on `main` (2026-10-25). The Linux path defect is fixed on this branch and the Windows line-ending defect by `.gitattributes`. A new hosted run is still to be recorded.
+**Hosted CI:** Hosted validation recorded on 2026-11-10 for `b0d74de83a3212338a39222d4ec6df833b8f8a88`: [full Windows/Ubuntu synthetic suite](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806006151) and [aggregate metrics tests](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806005650) passed. Logs confirm zero failures, R 4.6.1, Python 3.12.10 (Windows) / 3.12.16 (Ubuntu), and all ten metrics tests. Later changes require their own exact-head checks; see [draft PR #3](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/pull/3).
 
 ## Research competencies demonstrated (with where the evidence is)
 - **Clinical big-data engineering:** partitioned, checkpointed, memory-bounded processing of about 198 M rows on a 16 GB workstation ([evidence](docs/ENGINEERING_AT_SCALE.md)).
 - **Pharmacovigilance methodology:** report vs case units, deleted cases, drug identity, MedDRA era effects ([methodology](docs/METHODOLOGY.md)).
-- **Statistical quality assurance:** an exact 2×2 invariant, pre-specified BH families, transparent bootstrap failures, an independent re-implementation.
+- **Statistical quality assurance:** an exact 2أ—2 invariant, pre-specified BH families, transparent bootstrap failures, an independent re-implementation.
 - **Reproducible research software:** a manifest-verified release, cross-language parity, deterministic outputs.
 
 Not demonstrated or claimed: supervised machine learning, prediction, causal inference, clinical deployment.
@@ -105,4 +105,4 @@ See [limitations](docs/LIMITATIONS.md).
 
 ## Repository guide
 
-[Capabilities](docs/VALIDATED_CAPABILITIES.md) · [Reproducibility](docs/REPRODUCIBILITY.md) · [Engineering case study](docs/ENGINEERING_AT_SCALE.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
+[Capabilities](docs/VALIDATED_CAPABILITIES.md) آ· [Reproducibility](docs/REPRODUCIBILITY.md) آ· [Engineering case study](docs/ENGINEERING_AT_SCALE.md) آ· [Contributing](CONTRIBUTING.md) آ· [Security](SECURITY.md) آ· [Changelog](CHANGELOG.md)

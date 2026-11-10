@@ -1,3 +1,5 @@
+> Current publication status (2026-11-10): this synthetic engineering branch is published as draft PR #3. Historical private-candidate and pending-upload statements below describe earlier checkpoints. See the current [README](../README.md) for exact-commit hosted evidence. Scientific approval remains HOLD.
+
 # Strict synthetic count contract
 
 This component is a generic synthetic engineering utility. It does not process real research records.
