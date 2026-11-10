@@ -1,5 +1,7 @@
 """Executable synthetic M2 correctness, failure and conservation tests."""
 from pathlib import Path
+from unittest.mock import patch
+from itertools import count
 import sys,os,json,csv,hashlib,random,tempfile,copy,subprocess,unittest,collections
 sys.dont_write_bytecode=True
 ROOT=Path(__file__).resolve().parent;sys.path.insert(0,str(ROOT))
@@ -104,7 +106,10 @@ class Tests(unittest.TestCase):
  def test_atomic_manifest_and_success_gate(self):
   a,d,_,_=self.run_rows([modern()]);self.assertTrue((d/'_SUCCESS').exists());m=json.loads((d/'OUTPUT_MANIFEST.json').read_text());self.assertTrue(all(digest(d/k)==v['sha256'] for k,v in m.items()));self.assertFalse(list(self.root.glob('.m2-stage-*')));self.assertFalse(list(self.root.glob('*.lock')))
  def test_timeout_fails_closed(self):
-  a,d,_,_=self.run_rows([modern()],timeout=1e-12);self.assertEqual(a['status'],'PROCESSING_FAILED');self.assertFalse(a['complete']);self.assertFalse((d/'_SUCCESS').exists())
+  # Advance a controlled monotonic clock beyond the deadline; independent of OS clock resolution.
+  with patch('m2_engine.time.monotonic',side_effect=count()):
+   a,d,_,_=self.run_rows([modern()],timeout=0.5)
+  self.assertEqual(a['status'],'PROCESSING_FAILED');self.assertFalse(a['complete']);self.assertFalse((d/'_SUCCESS').exists())
  def test_cooperative_lock_is_not_overwritten(self):
   src=self.root/'lockedinput';write_package(src,[modern()]);dest=self.root/'lockedout';lock=self.root/'lockedout.lock';lock.write_text('SYNTHETIC_OTHER_WRITER')
   with self.assertRaises(FileExistsError):audit(src,dest,self.work)
