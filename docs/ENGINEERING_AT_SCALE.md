@@ -45,34 +45,16 @@ The total is a combined **row** count across three table families (one DEMO row 
 | 2025 | 1,617,313 | 7,469,819 | 5,587,113 |
 | **Total** | **23,699,758** | **95,798,799** | **78,153,109** |
 
-## Case-level populations, 2013–2025 (modern era)
-
-| Population | Unit | Count |
-|---|---|---:|
-| DEMO occurrences | report rows | 19,477,921 |
-| **A**: unique reports (latest source year per report identifier) | reports | **19,477,509** |
-| **B**: latest valid version per case identifier | cases | **16,779,363** |
-| Superseded follow-up versions (A − B) | reports | 2,698,146 (13.85% of A) |
-| **C**: B minus 7 version-history anomalies | cases | **16,779,356** |
-| B minus FDA deleted-case list 2026Q2 | cases | 16,777,898 |
-| B minus the union of all 31 FDA deleted-case lists (229,233 identifiers) | cases | 16,682,509 |
-
-How these were checked:
-- Two independent implementations, with different algorithms and libraries, produce identical counts:
-  - a bounded, partitioned R/data.table pipeline;
-  - a base-R verifier that shares no code with it.
-- They also equal an earlier run on a different platform (Linux R 4.3.3 against Windows R 4.6.1).
-
 ## Technical challenges
 
 | Problem | Scientific consequence | Implementation | Test evidence | Remaining limitation |
 |---|---|---|---|---|
-| FAERS stores follow-up versions of a case as separate reports | Report-level counts over-count cases (13.85% superseded versions) | Global latest-version selection per case identifier; ties and invalid versions withheld and counted, never guessed | 22 synthetic unit tests; two implementations agree exactly on real data | Global selection has look-ahead, so it is not valid for annual trend estimates |
+| FAERS stores follow-up versions of a case as separate reports | Report-level and case-level counts have different units | Global latest-version selection per case identifier; ties and invalid versions withheld and counted, never guessed | 22 synthetic unit tests; two implementations agree exactly on real data | Global selection has look-ahead, so it is not valid for annual trend estimates |
 | Case histories span years and quarters | Selecting a version within each year leaves duplicate cases | Hash partitioning on the case identifier, so every version of a case lands in one partition (asserted) | Identical outputs at 4 partition settings | — |
 | FDA publishes deleted-case lists (2019Q1 onward, including a cumulative list) that had never been applied | Deleted cases inflate counts | Lists read in place from source archives; two exclusion scopes kept as sensitivity populations | Overlap counts reproduced independently | Primary policy is a pending human decision |
 | Legacy (2004–2012) records lack usable case versions | Case-level selection is impossible in that era | Legacy years analysed at report level only | Per-year identifier coverage audit | Era split |
-| Renal terminology changed across MedDRA versions: the exact term "Acute kidney injury" occurs in no reports before 2014 | An as-coded endpoint is empty in early years | Quantified per year; harmonisation deferred to licensed, local LLT→PT mapping | Per-year term counts for all 22 years | Endpoint definition pending clinical approval |
-| Drug identity: about 14.9% of primary-suspect rows lack a canonical ingredient; salt forms are separate strings | Unknown exposure biases estimates toward the null; salt splits exposure | Unknown exposure counted, never silently treated as known; strict vs salt-to-base variants, with the crosswalk checked against a pinned RxNorm release | Per-year category reconciliation; crosswalk complete and correct against RxNorm | Mapping accuracy review pending (human) |
+| Renal terminology changes across historical versions | An as-coded endpoint can be era-dependent | Quantified per year; harmonisation deferred to licensed, local LLT→PT mapping | Per-year term counts for all 22 years | Endpoint definition pending clinical approval |
+| Drug identity: missing canonical ingredients and separate salt strings | Unknown exposure and salt handling can affect comparator definition | Unknown exposure counted, never silently treated as known; strict vs salt-to-base variants, with the crosswalk checked against a pinned RxNorm release | Per-year category reconciliation; crosswalk complete and correct against RxNorm | Mapping accuracy review pending (human) |
 | Laptop-class memory (16 GB) against tens of millions of rows | A naive pipeline cannot finish | One process per year and per case partition; durable checkpoints; validation before each checkpoint is accepted | Peak ≤ 0.36 GB per partition; restart test byte-identical | Upstream construction of MASTER is not version-controlled |
 | Integer overflow in 2×2 products at full scale (a·d > 2³¹) | Ratio estimates silently returned as missing | All cells held in double precision; regression tests | Found by output inspection; fixed; zero impact on final outputs | — |
 | Multiple testing was originally applied to a pre-filtered candidate set | False-discovery control does not hold | Hypothesis family fixed before any threshold | Synthetic null experiment; 8 tests | — |
@@ -92,3 +74,11 @@ A deliberately corrupted copy is detected as a failure.
 ## What this page does not claim
 - No signal, incidence, risk or causal estimate is reported here.
 - The exploratory methods-pilot results are not published: they await clinical and methodological approval.
+
+## Public evidence and limits
+
+[SCALE_EVIDENCE.csv](SCALE_EVIDENCE.csv) is a sanitized projection of the local integrity summary: annual table-row counts and number of matching partition hashes only. It contains no report/case identifiers, terms, paths or effect estimates. On 2026-11-10 its 22 rows were reconciled with the local summary and the 66-row post-verification hash comparison. Totals are DEMO 23,699,758; DRUG 95,798,799; REAC 78,153,109; combined 197,651,666.
+
+The local 481-row verifier agreement file was inspected: all 481 agreement flags are true. Only check counts are described here; private analytic values are withheld. The underlying evidence remains private, so public readers can verify summary arithmetic but cannot independently reproduce the real-data result from this repository. MD5 establishes identity against the frozen manifest; it does not authenticate FDA origin or historical transformations.
+
+Memory observations describe private bucket workers, not end-to-end memory or a benchmark of public M2. Source-to-MASTER contributor replay, ingredient review, terminology approvals and independent human methods review remain open. Synthetic equivalence tests cover their fixtures; they are not a proof for every possible input.

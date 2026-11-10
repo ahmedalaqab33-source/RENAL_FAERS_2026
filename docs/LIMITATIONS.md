@@ -2,7 +2,7 @@
 
 ## Of this repository
 - Synthetic fixtures only. The contracts are tested, but clinical or scientific validity is not.
-- Hosted CI is defined but has not been executed under a documented authorisation.
+- Hosted status must be checked for the exact proposed commit; historical runs do not certify this tree.
 - Cross-platform byte identity is not claimed.
 
 ## Of the private research programme (no data disclosed)

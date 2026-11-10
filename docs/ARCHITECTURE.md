@@ -1,22 +1,31 @@
-# Executable architecture and maturity
+# Architecture and execution boundaries
 
 ```mermaid
-flowchart TD
- M[Whole-tree release manifest] --> B[Temporary manifest-only bootstrap]
- B --> A[Combined local dispatcher]
- A --> Q[Existing synthetic count suite]
- A --> V[M1 strict table contract suite]
- A --> I[Coexistence and fixture demos]
- F[Bundled artificial CSV fixtures] --> Q
- F --> V
- F --> I
- Q --> O[External synthetic diagnostics]
- V --> O
- I --> O
+flowchart TB
+  subgraph PUBLIC["Public synthetic component"]
+    M[Exact-byte manifest] --> B[Manifest-only temporary copy]
+    B --> D[Combined dispatcher]
+    D --> Q[Python and R count QC]
+    D --> C[M1 table contract and parity]
+    D --> S[M2 SQLite streaming diagnostics]
+    D --> I[Integration and conservation checks]
+    F[Artificial fixtures] --> Q & C
+    G[Synthetic generator] --> S
+    Q & C & S & I --> O[External test outputs]
+    P[Reviewed aggregate input] --> T[Strict metrics publisher]
+  end
+  subgraph PRIVATE["Private research context â€” not executable here"]
+    A[FDA source releases] --> H[Historical harmonization]
+    H --> R[Frozen annual MASTER partitions]
+    R --> W[Per-year workers and case buckets]
+    W --> V[Checkpointed aggregates and independent verifier]
+  end
 ```
 
-Count functions and M1 validators are separate pure APIs. Fixture adapters alone read the named bundled examples; test coordinators alone write designated external diagnostics. The bootstrap checks exact membership and hashes, excludes top-level Git metadata only, rejects unlisted content and copies no credentials. No actual Git commands are part of execution.
+The historical source-to-MASTER build lacks version-controlled replay. The private pipeline does not feed the public fixtures. Only a manually reviewed, sanitized engineering-scale summary is included in documentation.
 
-`tools/run_ci.py` remains the existing count suite. New `tools/run_all.py` runs it, then the byte-identical M1 suite and new integration suite. `tools/ci_bootstrap.py` changes only its dispatch target. The workflow policy is unchanged: manual-only, least privilege, pinned actions, no secret inputs or artifact upload. Hosted execution remains unverified.
+Count QC and M1 are separate APIs with different zero-cell contracts. M2 preserves text namespaces and physical occurrences; it does not infer clinical entities. The dispatcher tests all modules and checks source immutability. The bootstrap rejects unlisted files and copies no Git metadata.
 
-The broader Atlas source-processing/report-universe/drug-identity/phenotype/scientific pipeline is not included. Scientific lineage, ethics, privacy, terminology and independent-review restrictions cannot be closed by the diagram or synthetic tests. There is no patient-level prediction or causal inference path in this executable tree.
+Source navigation: [count implementation](../tools/release_qc.py), [R count implementation](../R/count_qc.R), [M1 contract](M1_CONTRACT.md), [M2](../modules/m2/README.md), [metrics publisher](../tools/build_project_metrics.py), [test dispatcher](../tools/run_all.py).
+
+The synthetic workflow runs manually and on pull requests, is read-only, action-pinned and uploads no artifacts. The metrics workflow tests pull-request changes. Hosted execution and local test results are separate evidence classes.

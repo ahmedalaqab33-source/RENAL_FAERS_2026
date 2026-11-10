@@ -46,6 +46,6 @@ This document describes the methods of the private FAERS research pipeline that 
 
 ## Engineering
 - Bounded-memory execution: one process per source year and per case bucket, with hash-partitioned intermediates and durable aggregate checkpoints.
-- Exact equivalence to the reference implementation is proven on synthetic data, and the reference real-data window was reproduced exactly.
+- Equivalence to the reference implementation is observed on tested synthetic fixtures, and the reference real-data window was reproduced exactly.
 - Independent re-implementation in base R checks the critical counts.
 - Only aggregate outputs leave the restricted environment.

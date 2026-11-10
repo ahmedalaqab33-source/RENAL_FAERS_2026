@@ -1,6 +1,8 @@
 # Renal Safety Atlas
 
-**A reproducible FAERS research platform for renal pharmacovigilance: case-level analysis, drug harmonisation and statistical quality assurance.**
+**Clinical data engineering for renal pharmacovigilance — with a public synthetic Python/R validation toolkit.**
+
+Renal Safety Atlas investigates how report identity, follow-up versions, ingredient representation and terminology affect reproducible FAERS research. This repository exposes the tested engineering contracts and documents the scale of the private research pipeline. Clinical interpretation and manuscript publication remain on HOLD.
 
 Author: Ahmed Alaqab · Licence: [MIT](LICENSE) · Cite: [CITATION.cff](CITATION.cff)
 
@@ -17,8 +19,8 @@ Author: Ahmed Alaqab · Licence: [MIT](LICENSE) · Cite: [CITATION.cff](CITATION
 | Question | Answer |
 |---|---|
 | **Problem** | FAERS disproportionality analyses are routinely distorted by duplicate follow-up versions, deleted cases, inconsistent drug identities, changing MedDRA terminology and multiple-testing shortcuts |
-| **Real-scale work (private)** | 22 years (2004–2025); 66 frozen, hash-verified partitions; **197,651,666 table rows**; 19.48 M unique reports reduced to 16.78 M latest-version cases |
-| **Problems solved** | Global case-version selection; FDA deleted-case lists; drug ingredient and salt harmonisation; renal terminology era effects; bounded-memory, restartable execution; correct BH-FDR families; integer-overflow and bootstrap-failure defects |
+| **Real-scale work (private)** | 22 years (2004–2025); 66 frozen, hash-verified partitions; **197,651,666 table rows**; [sanitized annual evidence](docs/SCALE_EVIDENCE.csv) |
+| **Engineering implemented** | Global case-version selection; FDA deleted-case lists; drug ingredient and salt harmonisation; renal terminology era effects; bounded-memory, restartable execution; explicit pilot BH-FDR families; integer-overflow and bootstrap-failure defects |
 | **Independently verified** | Population counts, contingency tables, ROR/PRR/CI, FDR and bootstrap: **481/481 checks** between two independent implementations on real data |
 | **Provisional** | Clinical endpoint definitions, salt policy, deleted-case policy, drug-mapping accuracy review. All are pending human decisions |
 | **Public, runnable code** | Synthetic count QC, sufficient-statistics contract (M1), streaming diagnostics (M2), an aggregate-metrics publisher, one bootstrap command |
@@ -48,9 +50,9 @@ flowchart LR
 
 More detail: [architecture](docs/ARCHITECTURE.md) · [methodology](docs/METHODOLOGY.md) · [limitations](docs/LIMITATIONS.md) · [project profile](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
 
-## Quick start (synthetic, about 30 s)
+## Quick start (synthetic)
 
-Requirements: Python ≥ 3.12 (standard library only) and R ≥ 4.3 (base only). No package installation is needed.
+Requirements: Python 3.12 (or locally checked 3.14.7, standard library only) and R 4.6.1 (base only). No package installation is needed.
 
 ```text
 python -I tools/ci_bootstrap.py --output <new-dir-outside-repo> --work-dir <existing-dir> --rscript Rscript
@@ -77,7 +79,7 @@ These counts describe test coverage. They are not a scientific validation score.
 
 **Verified locally:** Windows 11 (Python 3.14.7, R 4.6.1) passes the full bootstrap. A fresh checkout passes with `core.autocrlf` set to true, false and input.
 
-**Line-ending note:** if an existing clone with `core.autocrlf=true` switches to this branch from an older one, run `git rm --cached -r . && git reset --hard` once. This re-checks out the files byte-exactly under `.gitattributes`.
+**Checkout integrity:** use a fresh clone if switching from a historical branch causes a manifest mismatch. Preserve local work. See [reproducibility](docs/REPRODUCIBILITY.md).
 
 **Hosted CI:** the manual Synthetic QC workflow failed on `main` (2026-10-25). The Linux path defect is fixed on this branch and the Windows line-ending defect by `.gitattributes`. A new hosted run is still to be recorded.
 
@@ -100,3 +102,7 @@ See [limitations](docs/LIMITATIONS.md).
 - Ahmed Alaqab confirmed ownership and licensing authority for this software, and attested on 2026-11-08 that public visibility of the repository was authorised.
 - Software rights do not grant redistribution of FAERS-derived, MedDRA, RxNorm or other reference data.
 - Citation version 0.1.0; no release tag or DOI is asserted.
+
+## Repository guide
+
+[Capabilities](docs/VALIDATED_CAPABILITIES.md) · [Reproducibility](docs/REPRODUCIBILITY.md) · [Engineering case study](docs/ENGINEERING_AT_SCALE.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
