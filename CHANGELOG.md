@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased â€” portfolio publication candidate, 2026-11-10
+## Unreleased — portfolio publication candidate, 2026-11-10
 
 - Reuses draft PRs #1 and #2: project profile, strict aggregate publisher, regression coverage and exact-byte checkout policy.
 - Preserves the latest validated Claude release commits, including the Unix Rscript path-with-spaces fix.

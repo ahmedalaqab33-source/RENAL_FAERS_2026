@@ -14,7 +14,7 @@ flowchart TB
     Q & C & S & I --> O[External test outputs]
     P[Reviewed aggregate input] --> T[Strict metrics publisher]
   end
-  subgraph PRIVATE["Private research context â€” not executable here"]
+  subgraph PRIVATE["Private research context — not executable here"]
     A[FDA source releases] --> H[Historical harmonization]
     H --> R[Frozen annual MASTER partitions]
     R --> W[Per-year workers and case buckets]

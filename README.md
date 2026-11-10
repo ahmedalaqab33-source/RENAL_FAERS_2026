@@ -1,6 +1,6 @@
 # Renal Safety Atlas
 
-**Clinical data engineering for renal pharmacovigilance â€” with a public synthetic Python/R validation toolkit.**
+**Clinical data engineering for renal pharmacovigilance — with a public synthetic Python/R validation toolkit.**
 
 Renal Safety Atlas investigates how report identity, follow-up versions, ingredient representation and terminology affect reproducible FAERS research. This repository exposes the tested engineering contracts and documents the scale of the private research pipeline. Clinical interpretation and manuscript publication remain on HOLD.
 
@@ -19,7 +19,7 @@ Author: Ahmed Alaqab آ· Licence: [MIT](LICENSE) آ· Cite: [CITATION.cff](CITA
 | Question | Answer |
 |---|---|
 | **Problem** | FAERS disproportionality analyses are routinely distorted by duplicate follow-up versions, deleted cases, inconsistent drug identities, changing MedDRA terminology and multiple-testing shortcuts |
-| **Real-scale work (private)** | 22 years (2004â€“2025); 66 frozen, hash-verified partitions; **197,651,666 table rows**; [sanitized annual evidence](docs/SCALE_EVIDENCE.csv) |
+| **Real-scale work (private)** | 22 years (2004–2025); 66 frozen, hash-verified partitions; **197,651,666 table rows**; [sanitized annual evidence](docs/SCALE_EVIDENCE.csv) |
 | **Engineering implemented** | Global case-version selection; FDA deleted-case lists; drug ingredient and salt harmonisation; renal terminology era effects; bounded-memory, restartable execution; explicit pilot BH-FDR families; integer-overflow and bootstrap-failure defects |
 | **Independently verified** | Population counts, contingency tables, ROR/PRR/CI, FDR and bootstrap: **481/481 checks** between two independent implementations on real data |
 | **Provisional** | Clinical endpoint definitions, salt policy, deleted-case policy, drug-mapping accuracy review. All are pending human decisions |
