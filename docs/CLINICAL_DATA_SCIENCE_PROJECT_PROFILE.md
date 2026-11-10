@@ -65,3 +65,13 @@ The **broader private research program**, once supported by reviewed execution l
 | SCIENTIFIC_READY | HOLD | The existing private signal script uses candidate-filtered Fisher tests followed by BH adjustment; the testing family needs protocol review before any global FDR claim. Lineage, cohort/denominator approval and independent scientific review remain required. No new real-data signal analysis was executed. |
 
 The local SOURCE candidate in the 2006 check is an already harmonized RDS artifact, not independently verified original FDA source material. Structural checks and before/after byte preservation do not establish historical authority. No unreviewed local record counts are published as certified project-scale metrics.
+
+## Update — 2026-11-10 (supersedes the status cells above; the 2026-11-07 record is kept unchanged for history)
+
+| Gate | Status | New executed evidence and limits |
+| --- | --- | --- |
+| SOFTWARE_READY | PASS (synthetic component) | Full `tools/ci_bootstrap.py` passes on Windows (Python 3.14.7 / R 4.6.1) for fresh clones with `core.autocrlf` = true, false and input. The Unix `Rscript` space-path fix is included. **A hosted CI run is still to be recorded.** |
+| DATA_READY (MASTER layer) | CONDITIONAL PASS | All 66 MASTER partitions (2004–2025) match their manifest MD5, and recomputed row counts equal the manifest (197,651,666 table rows). Zero DRUG/REAC orphans and zero within-year duplicate report IDs. Checked by machine reconciliation, not independent human review. **Historical source-to-frozen-to-master contributor replay remains open.** The 2005–2012 MASTER DEMO rows carry no case identifiers (2004 carries case IDs but no valid versions), so legacy years are report-level only. |
+| SCIENTIFIC_READY | HOLD | The candidate-filtered BH procedure is replaced by a pre-specified family. An exploratory methods pilot (3 pre-specified drug–AKI pairs, 2013–2025, report- vs case-level) was executed and independently verified (481/481 checks). Endpoint, salt and deleted-case policies, the mapping accuracy review and independent scientific review are pending. **No results are released.** |
+
+Engineering scale and verification detail: [Engineering at scale](ENGINEERING_AT_SCALE.md). The 2026 quarterly files are outside the frozen MASTER layer; the verified range is 2004–2025 (22 years).
