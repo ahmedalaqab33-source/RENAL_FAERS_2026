@@ -39,6 +39,6 @@ def verify_manifest(root,manifest):
         seen.add(name);p=root/rel
         if p.is_symlink() or not p.is_file() or p.resolve().parent!=root and root not in p.resolve().parents:raise ValueError('missing or escaped manifest file')
         if digest(p)!=r['sha256'] or p.stat().st_size!=int(r['bytes']):raise ValueError('manifest mismatch')
-    actual={p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file() and p.resolve()!=Path(manifest).resolve()}
+    actual={p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file() and p.resolve()!=Path(manifest).resolve() and p.relative_to(root).parts[0]!='.git'}
     if actual!=seen:raise ValueError('extra or missing file')
     return len(rr)

@@ -18,6 +18,7 @@ class Guards(unittest.TestCase):
     def test_checkout_metadata_excluded_without_git(self):
         with tempfile.TemporaryDirectory() as t:
             source=Path(t)/'source';shutil.copytree(ROOT,source);meta=source/'.git';meta.mkdir();(meta/'SYNTHETIC_METADATA_ONLY.txt').write_text('not a Git initialization')
+            q.verify_manifest(source,source/'RELEASE_MANIFEST.csv')
             dest=Path(t)/'component';b.stage_component(source,dest);self.assertFalse((dest/'.git').exists())
             with (dest/'RELEASE_MANIFEST.csv').open() as h:expected=len(list(csv.DictReader(h)))
             self.assertEqual(q.verify_manifest(dest,dest/'RELEASE_MANIFEST.csv'),expected)
