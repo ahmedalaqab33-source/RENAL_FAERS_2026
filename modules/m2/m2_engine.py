@@ -102,9 +102,10 @@ def audit(input_dir,output_dir,work_dir,batch_size=256,timeout=60,fail_after=Non
  if output.exists() or not output.parent.is_dir() or not work.is_dir():raise AuditError('OUTPUT_EXISTS_OR_PARENT')
  if shutil.disk_usage(work).free<1073741824:raise AuditError('DISK_FLOOR')
  lock=output.with_name(output.name+'.lock');fd=os.open(lock,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600);os.close(fd)
- stage=Path(tempfile.mkdtemp(prefix='.m2-stage-',dir=output.parent));(stage/'chunks.jsonl').touch();start=time.monotonic();seen=valid=rejected=inserted=0;complete=False;reason=None;metrics={};error_counts={};temp_peak=0;context_digest=None
- original=(data.stat().st_size,data.stat().st_mtime_ns,manifest.stat().st_size,manifest.stat().st_mtime_ns,digest(manifest))
+ stage=None
  try:
+  stage=Path(tempfile.mkdtemp(prefix='.m2-stage-',dir=output.parent));(stage/'chunks.jsonl').touch();start=time.monotonic();seen=valid=rejected=inserted=0;complete=False;reason=None;metrics={};error_counts={};temp_peak=0;context_digest=None
+  original=(data.stat().st_size,data.stat().st_mtime_ns,manifest.stat().st_size,manifest.stat().st_mtime_ns,digest(manifest))
   with tempfile.TemporaryDirectory(prefix='m2-work-',dir=work) as tmp:
    tmp=Path(tmp);db=tmp/'synthetic.sqlite';c=sqlite3.connect(db)
    def progress():return int(time.monotonic()-start>timeout)
@@ -164,5 +165,5 @@ def audit(input_dir,output_dir,work_dir,batch_size=256,timeout=60,fail_after=Non
   os.rename(stage,output)
   return summary,dict(wall_seconds=time.monotonic()-start,temp_disk_max_observed_bytes=temp_peak,sqlite_page_cap_bytes=LIMITS['sqlite_bytes'],cache_target_bytes=8388608)
  finally:
-  if stage.exists():shutil.rmtree(stage)
+  if stage is not None and stage.exists():shutil.rmtree(stage)
   lock.unlink(missing_ok=True)
