@@ -166,5 +166,7 @@ def audit(input_dir,output_dir,work_dir,batch_size=256,timeout=60,fail_after=Non
   os.rename(stage,output)
   return summary,dict(wall_seconds=time.monotonic()-start,temp_disk_max_observed_bytes=temp_peak,sqlite_page_cap_bytes=LIMITS['sqlite_bytes'],cache_target_bytes=8388608)
  finally:
-  if stage is not None and stage.exists():shutil.rmtree(stage)
-  lock.unlink(missing_ok=True)
+  try:
+   if stage is not None and stage.exists():shutil.rmtree(stage)
+  finally:
+   lock.unlink(missing_ok=True)
