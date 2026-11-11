@@ -105,6 +105,10 @@ class Tests(unittest.TestCase):
   a,d,_,_=self.run_rows([dict(modern(),unapproved='SYN_IDENT_SECRET')]);receipt=(d/'quarantine.jsonl').read_text();self.assertNotIn('SYN_IDENT_SECRET',receipt);self.assertIn('SCHEMA_DRIFT',receipt)
  def test_atomic_manifest_and_success_gate(self):
   a,d,_,_=self.run_rows([modern()]);self.assertTrue((d/'_SUCCESS').exists());m=json.loads((d/'OUTPUT_MANIFEST.json').read_text());self.assertTrue(all(digest(d/k)==v['sha256'] for k,v in m.items()));self.assertFalse(list(self.root.glob('.m2-stage-*')));self.assertFalse(list(self.root.glob('*.lock')))
+  src=self.root/'stage_failure_input';write_package(src,[modern()]);blocked=self.root/'stage_failure_out'
+  with patch('m2_engine.tempfile.mkdtemp',side_effect=OSError('SYNTHETIC_STAGE_INIT_FAILURE')):
+   with self.assertRaises(OSError):audit(src,blocked,self.work)
+  self.assertFalse(blocked.exists());self.assertFalse((self.root/'stage_failure_out.lock').exists())
  def test_timeout_fails_closed(self):
   # Advance a controlled monotonic clock beyond the deadline; independent of OS clock resolution.
   with patch('m2_engine.time.monotonic',side_effect=count()):
