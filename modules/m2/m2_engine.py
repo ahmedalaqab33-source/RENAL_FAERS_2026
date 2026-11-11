@@ -96,6 +96,7 @@ def global_metrics(c):
 def audit(input_dir,output_dir,work_dir,batch_size=256,timeout=60,fail_after=None):
  if type(batch_size) is not int or not 1<=batch_size<=4096 or type(timeout) not in [int,float] or not 0<timeout<=300:raise AuditError('RESOURCE_CONFIG')
  if fail_after is not None and (type(fail_after) is not int or fail_after<1):raise AuditError('FAILURE_INJECTION_CONFIG')
+ if Path(output_dir).is_symlink():raise AuditError('OUTPUT_SYMLINK')
  root,data,manifest,meta=package(input_dir);output=Path(output_dir).resolve();work=Path(work_dir).resolve();code_root=Path(__file__).resolve().parent
  for protected in [root,code_root]:
   if output==protected or protected in output.parents or output in protected.parents or work==protected or protected in work.parents or work in protected.parents:raise AuditError('OUTPUT_WORK_SCOPE')
