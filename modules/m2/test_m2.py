@@ -1,5 +1,7 @@
 """Executable synthetic M2 correctness, failure and conservation tests."""
 from pathlib import Path
+from unittest.mock import patch
+from itertools import count
 import sys,os,json,csv,hashlib,random,tempfile,copy,subprocess,unittest,collections
 sys.dont_write_bytecode=True
 ROOT=Path(__file__).resolve().parent;sys.path.insert(0,str(ROOT))
@@ -86,6 +88,13 @@ class Tests(unittest.TestCase):
  def test_unsafe_output_inside_source(self):
   src=self.root/'unsafe';write_package(src,[modern()])
   with self.assertRaises(AuditError):audit(src,src/'out',self.work)
+ def test_output_symlink_rejection(self):
+  # Simulate a dangling output symlink without needing Windows symlink privileges.
+  src=self.root/'output_symlink_src';write_package(src,[modern()]);out=self.root/'synthetic_dangling_output'
+  original=Path.is_symlink
+  with patch('m2_engine.Path.is_symlink',autospec=True,side_effect=lambda path: path==out or original(path)):
+   with self.assertRaisesRegex(AuditError,'OUTPUT_SYMLINK'):audit(src,out,self.work)
+  self.assertFalse(out.exists());self.assertFalse((self.root/'synthetic_dangling_output.lock').exists())
  def test_invalid_resource_contracts(self):
   src=self.root/'resources';write_package(src,[modern()])
   for b in [0,-1,True,4097,1.5]:
@@ -103,8 +112,20 @@ class Tests(unittest.TestCase):
   a,d,_,_=self.run_rows([dict(modern(),unapproved='SYN_IDENT_SECRET')]);receipt=(d/'quarantine.jsonl').read_text();self.assertNotIn('SYN_IDENT_SECRET',receipt);self.assertIn('SCHEMA_DRIFT',receipt)
  def test_atomic_manifest_and_success_gate(self):
   a,d,_,_=self.run_rows([modern()]);self.assertTrue((d/'_SUCCESS').exists());m=json.loads((d/'OUTPUT_MANIFEST.json').read_text());self.assertTrue(all(digest(d/k)==v['sha256'] for k,v in m.items()));self.assertFalse(list(self.root.glob('.m2-stage-*')));self.assertFalse(list(self.root.glob('*.lock')))
+  src=self.root/'stage_failure_input';write_package(src,[modern()]);blocked=self.root/'stage_failure_out'
+  with patch('m2_engine.tempfile.mkdtemp',side_effect=OSError('SYNTHETIC_STAGE_INIT_FAILURE')):
+   with self.assertRaises(OSError):audit(src,blocked,self.work)
+  self.assertFalse(blocked.exists());self.assertFalse((self.root/'stage_failure_out.lock').exists())
+  src2=self.root/'cleanup_failure_input';write_package(src2,[modern()]);blocked2=self.root/'cleanup_failure_out'
+  with patch('m2_engine.tempfile.TemporaryDirectory',side_effect=OSError('SYNTHETIC_WORK_INIT_FAILURE')):
+   with patch('m2_engine.shutil.rmtree',side_effect=OSError('SYNTHETIC_STAGE_CLEANUP_FAILURE')):
+    with self.assertRaises(OSError):audit(src2,blocked2,self.work)
+  self.assertFalse(blocked2.exists());self.assertFalse((self.root/'cleanup_failure_out.lock').exists())
  def test_timeout_fails_closed(self):
-  a,d,_,_=self.run_rows([modern()],timeout=1e-12);self.assertEqual(a['status'],'PROCESSING_FAILED');self.assertFalse(a['complete']);self.assertFalse((d/'_SUCCESS').exists())
+  # Advance a controlled monotonic clock beyond the deadline; independent of OS clock resolution.
+  with patch('m2_engine.time.monotonic',side_effect=count()):
+   a,d,_,_=self.run_rows([modern()],timeout=0.5)
+  self.assertEqual(a['status'],'PROCESSING_FAILED');self.assertFalse(a['complete']);self.assertFalse((d/'_SUCCESS').exists())
  def test_cooperative_lock_is_not_overwritten(self):
   src=self.root/'lockedinput';write_package(src,[modern()]);dest=self.root/'lockedout';lock=self.root/'lockedout.lock';lock.write_text('SYNTHETIC_OTHER_WRITER')
   with self.assertRaises(FileExistsError):audit(src,dest,self.work)

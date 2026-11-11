@@ -1,83 +1,108 @@
-# Renal Safety Atlas — Clinical Data Engineering and Statistical QC
+# Renal Safety Atlas
 
-Reproducible Python and R software for **synthetic count QC** and **sufficient-statistics data integrity** in pharmacoepidemiology engineering.
+**Clinical data engineering for renal pharmacovigilance — with a public synthetic Python/R validation toolkit.**
 
-The QC and M1 baseline is public at commit
-`9cde735a1baa01bfaa4066dce2ef72059f710b74`. This **unreleased private integration candidate** adds the existing bounded M2 streaming/SQLite module. No public M2 update or hosted CI execution is claimed.
+Renal Safety Atlas investigates how report identity, follow-up versions, ingredient representation and terminology affect reproducible FAERS research. This repository exposes the tested engineering contracts and documents the scale of the private research pipeline. Clinical interpretation and manuscript publication remain on HOLD.
 
-**SYNTHETIC / NOT FAERS:** all bundled fixtures are artificial. This executable component does not reproduce the full FAERS ETL, select real cohorts, resolve drug identities, validate signals, estimate patient risk or deploy clinical AI.
+Author: Ahmed Alaqab آ· Licence: [MIT](LICENSE) آ· Cite: [CITATION.cff](CITATION.cff)
 
-## Modules and maturity
+> **What is public here:** tested Python and base-R quality-control software, run on **synthetic data only**.
+>
+> **What is private:** the real FDA FAERS pipeline. Its scale and verification are documented in [Engineering at scale](docs/ENGINEERING_AT_SCALE.md); no FAERS records are distributed.
+>
+> **Not provided:** no drug-safety signal, incidence or causal estimate is published or implied.
 
-| Module | What it does | Evidence boundary |
-|---|---|---|
-| Synthetic count QC | Strict scalar counts, ROR/PRR/Wald arithmetic on artificial tables; zero cells produce undefined estimates | Initial code public; local R/Python tests verified; no hosted CI claim |
-| M1 sufficient-statistics contract | Exact schema, opaque IDs, observed-pair positivity, integer bounds, margins and shared N | Authentic source contract extracted; baseline public; local synthetic tests verified |
-| M2 streaming/SQLite diagnostic | Bounded synthetic JSONL validation, namespace-preserving storage, conservation, quarantine and aggregate linkage diagnostics | Existing module integrated privately; local tests verified; no clinical mapping or production-scale claim |
-| Broader Atlas research | Source harmonization, identity, phenotype sensitivity, external knowledge concordance and exploratory representations | Private and scientifically conditional; not executed by these commands |
+---
 
-M1 does **not** calculate ROR, PRR, Fisher tests, BH/FDR or clinical signals. All three modules check engineering contracts; none establishes clinical validity or independent human reproduction.
+## At a glance
 
-## Quick start
+| Question | Answer |
+|---|---|
+| **Problem** | FAERS disproportionality analyses are routinely distorted by duplicate follow-up versions, deleted cases, inconsistent drug identities, changing MedDRA terminology and multiple-testing shortcuts |
+| **Real-scale work (private)** | 22 years (2004–2025); 66 frozen, hash-verified partitions; **197,651,666 table rows**; [sanitized annual evidence](docs/SCALE_EVIDENCE.csv) |
+| **Engineering implemented** | Global case-version selection; FDA deleted-case lists; drug ingredient and salt harmonisation; renal terminology era effects; bounded-memory, restartable execution; explicit pilot BH-FDR families; integer-overflow and bootstrap-failure defects |
+| **Independently verified** | Population counts, contingency tables, ROR/PRR/CI, FDR and bootstrap: **481/481 checks** between two independent implementations on real data |
+| **Provisional** | Clinical endpoint definitions, salt policy, deleted-case policy, drug-mapping accuracy review. All are pending human decisions |
+| **Public, runnable code** | Synthetic count QC, sufficient-statistics contract (M1), streaming diagnostics (M2), an aggregate-metrics publisher, one bootstrap command |
+| **Research questions** | See the [research roadmap](docs/RESEARCH_ROADMAP.md) (flagship: report- vs case-level selection) |
 
-Use Python 3.12 and R 4.6.1, with `Rscript` on PATH or supplied explicitly. Only the Python standard library and base R are required; no pip or R package installation is needed. Local verification uses Windows, Python 3.12.14 and R 4.6.1. Linux and hosted Windows remain unverified.
+## Architecture
 
-Run from the component root, choosing a new external output directory whose parent exists:
+```mermaid
+flowchart LR
+  subgraph PRIVATE["Private: real FAERS (local, not distributed)"]
+    S[FDA quarterly ASCII 2004-2025] --> H[Annual harmonisation]
+    H --> M[Frozen MASTER: 66 hashed partitions]
+    M --> W[Per-year workers]
+    W --> K[Case-hash partitions: global latest-version selection]
+    K --> T[2x2 tables, ROR/PRR, BH-FDR, paired bootstrap]
+    M --> V[Independent base-R verifier]
+    V -. 481/481 agree .- T
+  end
+  subgraph PUBLIC["Public: this repository (synthetic only)"]
+    F[Synthetic fixtures] --> Q[Count QC]
+    F --> C1[M1 contract]
+    G[M2 generator] --> C2[M2 streaming audit]
+    P[Aggregate metrics publisher]
+    B[Manifest-verified bootstrap] --> Q & C1 & C2
+  end
+```
+
+More detail: [architecture](docs/ARCHITECTURE.md) آ· [methodology](docs/METHODOLOGY.md) آ· [limitations](docs/LIMITATIONS.md) آ· [project profile](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
+
+## Quick start (synthetic)
+
+Requirements: Python 3.12 (or locally checked 3.14.7, standard library only) and R 4.6.1 (base only). No package installation is needed.
 
 ```text
-python -I run_demo.py --output ../count-demo-output --rscript Rscript
-python -I run_m1_demo.py --output ../m1-demo-output --work-dir <existing-external-work-parent> --rscript Rscript
+python -I tools/ci_bootstrap.py --output <new-dir-outside-repo> --work-dir <existing-dir> --rscript Rscript
 ```
 
-On Windows the explicit R work parent must contain no spaces. Quote interpreter/path arguments when needed. Component and output paths may contain spaces when a valid external work parent is supplied. No silent temporary-directory redirection is used. Destinations must be new and outside the source tree.
+- Exit code 0 means every suite passed.
+- On Windows the work directory must not contain spaces.
+- Individual demos:
+  - `python -I run_demo.py --output <new-dir> --rscript Rscript` (count QC);
+  - `python -I run_m1_demo.py --output <new-dir> --work-dir <dir> --rscript Rscript` (M1);
+  - `modules/m2/m2_cli.py` (M2; see the [module README](modules/m2/README.md)).
 
-The count demo writes synthetic metric CSV/JSON and a manifest. The M1 demo calls the actual Python and R validators on the single bundled artificial fixture, verifies IDs, margins and N across languages, and writes `m1_validation.json` plus `OUTPUT_MANIFEST.csv`. It accepts no arbitrary dataset path and hard-codes no expected result table.
+## Quality control in this repository
 
-## Two explicit contracts
+| Suite | Content |
+|---|---|
+| Count QC | 13 + 90 Python tests, 89 R cases, 36 runner tests, 8 CI guards; numeric output and repeated-hash checks |
+| M1 sufficient statistics | 65 shared cases per language, 31 language-native cases, 186 exact Python/R parity comparisons |
+| M2 streaming | 31 tests including 19 adversarial schema sub-cases |
+| Integration | Python/R coexistence, cross-module and repeated-demo hash checks |
+| Release integrity | Every file listed with size and SHA-256 in [`RELEASE_MANIFEST.csv`](RELEASE_MANIFEST.csv); `.gitattributes` keeps bytes identical across platforms |
 
-| Rule | Count QC | M1 |
-|---|---|---|
-| Counts | Plain finite nonnegative integer-valued scalars | Plain finite nonnegative integer-valued table columns/values |
-| Bounds | Each cell and total <= 2^53-1 | Each count, margin and total <= 2^53-1; addition guarded before evaluation |
-| `a=0` | Accepted; association values undefined | Rejected: historical observed-pair contract requires `a>0` |
-| `b`, `c` or `d` zero | Accepted; association values undefined | Structurally accepted; no association estimates computed |
-| Missing/Boolean/classed values | Rejected | Rejected; no silent coercion or imputation |
-| IDs and margins | Not part of scalar API | Unique opaque string `pair_id`; exact `a+b=n_drug`, `a+c=n_event`; one shared N |
+These counts describe test coverage. They are not a scientific validation score.
 
-See [count contract](docs/COUNT_CONTRACT.md), [M1 API](docs/M1_CONTRACT.md) and [source provenance](docs/SOURCE_PROVENANCE.md). Numeric-looking IDs stay strings; rows are not independent patients or cases. M1 rejects empty tables and extra schema fields.
+**Verified locally:** Windows 11 (Python 3.14.7, R 4.6.1) passes the full bootstrap. A fresh checkout passes with `core.autocrlf` set to true, false and input.
 
-## Reproduce all local checks
+**Checkout integrity:** use a fresh clone if switching from a historical branch causes a manifest mismatch. Preserve local work. See [reproducibility](docs/REPRODUCIBILITY.md).
 
-```text
-python -I tools/ci_bootstrap.py --output <new-external-output> --work-dir <existing-external-work-parent> --rscript Rscript
-```
+**Hosted CI:** Hosted validation recorded on 2026-11-10 for `b0d74de83a3212338a39222d4ec6df833b8f8a88`: [full Windows/Ubuntu synthetic suite](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806006151) and [aggregate metrics tests](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806005650) passed. Logs confirm zero failures, R 4.6.1, Python 3.12.10 (Windows) / 3.12.16 (Ubuntu), and all ten metrics tests. Later changes require their own exact-head checks; see [draft PR #3](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/pull/3).
 
-The bootstrap verifies the complete manifest, copies only its listed content to a temporary component path with spaces, and invokes `tools/run_all.py`. The dispatcher runs the unchanged count suite, complete M1 suite and coexistence/demo tests. Logs are external local diagnostics, not proposed export files.
+## Research competencies demonstrated (with where the evidence is)
+- **Clinical big-data engineering:** partitioned, checkpointed, memory-bounded processing of about 198 M rows on a 16 GB workstation ([evidence](docs/ENGINEERING_AT_SCALE.md)).
+- **Pharmacovigilance methodology:** report vs case units, deleted cases, drug identity, MedDRA era effects ([methodology](docs/METHODOLOGY.md)).
+- **Statistical quality assurance:** an exact 2أ—2 invariant, pre-specified BH families, transparent bootstrap failures, an independent re-implementation.
+- **Reproducible research software:** a manifest-verified release, cross-language parity, deterministic outputs.
 
-Test categories stay separate: count QC has 13 original Python tests, 90 contract Python tests, 89 R cases, 36 runner tests and 8 CI guards; 15 metric, 89 classification, 40 numeric output comparisons and 3 repeated hashes. M1 has 65 shared cases in each language, 15 Python-native and 16 R-native cases, and 186 exact parity comparisons. Integration adds Python coexistence/failure tests, eight R coexistence checks and repeated M1 demo outputs. These counts are not a scientific validation score.
+Not demonstrated or claimed: supervised machine learning, prediction, causal inference, clinical deployment.
 
-The [manual workflow](.github/workflows/synthetic-qc.yml) keeps its existing pinned actions, read-only permissions, Windows/Ubuntu targets and no-upload policy. Its bootstrap now selects the combined dispatcher. Workflow dispatch requires separate authorization; no passing badge or clean-environment success is asserted. See [CI contract](docs/CI_CONTRACT.md).
+## Limitations
+- FAERS is a spontaneous reporting system: under-reporting, stimulated reporting and missing fields.
+- Disproportionality measures **reporting associations**, not risk.
+- Clinical endpoint and policy decisions are on HOLD.
 
-## Architecture, rights and limitations
+See [limitations](docs/LIMITATIONS.md).
 
-See [architecture](docs/ARCHITECTURE.md) for actual executable boundaries. Functions do not load research data; fixture adapters read only bundled synthetic inputs. Outputs are deterministic on the tested runtime; cross-platform byte identity is not claimed.
+## Rights and citation
+- Ahmed Alaqab confirmed ownership and licensing authority for this software, and attested on 2026-11-08 that public visibility of the repository was authorised.
+- Software rights do not grant redistribution of FAERS-derived, MedDRA, RxNorm or other reference data.
+- Citation version 0.1.0; no release tag or DOI is asserted.
 
-Ahmed Alaqab confirmed ownership/licensing authority for both the original M1 source and extraction. [MIT](LICENSE) and [citation metadata](CITATION.cff) retain their confirmed author details. Citation version 0.1.0 is preserved from the baseline; no new release tag, publication date or DOI is invented for this unreleased integration. Software rights do not grant reference-data redistribution or institutional/clinical endorsement.
+## Repository guide
 
-Scientific, publication and independent-review HOLDs remain. No supervised ML, causal estimation, real cohort reconstruction, reference mapping, manuscript editing or research-data release is performed. The rejected restricted canonical cohort is not reinstated. This is evidence of Clinical Data Engineering, Data Integrity, Statistical Quality Control and Reproducible Research, not a validated clinical product.
-
-
-## Integrated streaming/SQLite module (private candidate)
-
-QC and M1 remain separate from the bounded M2 synthetic streaming diagnostic. M2 preserves TEXT namespaces, physical occurrences and typed missingness; it never selects cases or derives drug ingredients. It requires base Python only; the full inherited verification additionally requires base R. All examples are synthetic, not FAERS.
-
-From the repository root:
-
-```sh
-python -I modules/m2/m2_cli.py generate --output /temporary/new-input --rows 2000 --seed 1729
-python -I modules/m2/m2_cli.py audit --input /temporary/new-input --output /temporary/new-output --work-dir /temporary/existing-work --batch-size 64
-```
-
-Replace paths with new external directories; create the work directory first. Windows accepts equivalent native paths. The combined runner requires a no-space Windows R work path, at least 1 GiB free disk for M2, and writes outside fixtures. Run `python -I tools/ci_bootstrap.py --output NEW_EXTERNAL_OUTPUT --work-dir EXISTING_EXTERNAL_WORK --rscript Rscript`. M2 finding exit 3 differs from processing failure exit 2; only clean complete runs return 0. See modules/m2/CONTRACT.md, PERFORMANCE.md and INTEGRATION_STATUS.md. Existing GitHub Actions invokes this dispatcher, but hosted execution is not certified by local tests.
-
-No real FAERS ETL, approved cohort, clinical prediction, terminology corpus or scientific validation is included. Broader research and publication remain HOLD.
+[Capabilities](docs/VALIDATED_CAPABILITIES.md) آ· [Reproducibility](docs/REPRODUCIBILITY.md) آ· [Engineering case study](docs/ENGINEERING_AT_SCALE.md) آ· [Contributing](CONTRIBUTING.md) آ· [Security](SECURITY.md) آ· [Changelog](CHANGELOG.md)
