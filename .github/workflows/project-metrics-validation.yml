@@ -5,6 +5,8 @@ on:
       - 'tools/build_project_metrics.py'
       - 'tests/test_project_metrics.py'
       - '.github/workflows/project-metrics-validation.yml'
+      - 'docs/CI_CONTRACT.md'
+      - 'RELEASE_MANIFEST.csv'
   workflow_dispatch:
 permissions:
   contents: read
