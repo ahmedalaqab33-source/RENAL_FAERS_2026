@@ -116,6 +116,11 @@ class Tests(unittest.TestCase):
   with patch('m2_engine.tempfile.mkdtemp',side_effect=OSError('SYNTHETIC_STAGE_INIT_FAILURE')):
    with self.assertRaises(OSError):audit(src,blocked,self.work)
   self.assertFalse(blocked.exists());self.assertFalse((self.root/'stage_failure_out.lock').exists())
+  src2=self.root/'cleanup_failure_input';write_package(src2,[modern()]);blocked2=self.root/'cleanup_failure_out'
+  with patch('m2_engine.tempfile.TemporaryDirectory',side_effect=OSError('SYNTHETIC_WORK_INIT_FAILURE')):
+   with patch('m2_engine.shutil.rmtree',side_effect=OSError('SYNTHETIC_STAGE_CLEANUP_FAILURE')):
+    with self.assertRaises(OSError):audit(src2,blocked2,self.work)
+  self.assertFalse(blocked2.exists());self.assertFalse((self.root/'cleanup_failure_out.lock').exists())
  def test_timeout_fails_closed(self):
   # Advance a controlled monotonic clock beyond the deadline; independent of OS clock resolution.
   with patch('m2_engine.time.monotonic',side_effect=count()):
