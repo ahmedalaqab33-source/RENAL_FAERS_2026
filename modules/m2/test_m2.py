@@ -88,6 +88,13 @@ class Tests(unittest.TestCase):
  def test_unsafe_output_inside_source(self):
   src=self.root/'unsafe';write_package(src,[modern()])
   with self.assertRaises(AuditError):audit(src,src/'out',self.work)
+ def test_output_symlink_rejection(self):
+  # Simulate a dangling output symlink without needing Windows symlink privileges.
+  src=self.root/'output_symlink_src';write_package(src,[modern()]);out=self.root/'synthetic_dangling_output'
+  original=Path.is_symlink
+  with patch('m2_engine.Path.is_symlink',autospec=True,side_effect=lambda path: path==out or original(path)):
+   with self.assertRaisesRegex(AuditError,'OUTPUT_SYMLINK'):audit(src,out,self.work)
+  self.assertFalse(out.exists());self.assertFalse((self.root/'synthetic_dangling_output.lock').exists())
  def test_invalid_resource_contracts(self):
   src=self.root/'resources';write_package(src,[modern()])
   for b in [0,-1,True,4097,1.5]:
