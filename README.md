@@ -1,4 +1,4 @@
-# Renal Safety Atlas — Clinical Data Engineering and Statistical QC
+# Renal Safety Atlas - Clinical Data Engineering and Statistical QC
 
 Reproducible Python and R software for **synthetic count QC** and **sufficient-statistics data integrity** in pharmacoepidemiology engineering.
 
