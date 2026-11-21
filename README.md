@@ -71,7 +71,7 @@ python -I tools/ci_bootstrap.py --output <new-dir-outside-repo> --work-dir <exis
 |---|---|
 | Count QC | 13 + 90 Python tests, 89 R cases, 36 runner tests, 8 CI guards; numeric output and repeated-hash checks |
 | M1 sufficient statistics | 65 shared cases per language, 31 language-native cases, 186 exact Python/R parity comparisons |
-| M2 streaming | 31 tests including 19 adversarial schema sub-cases |
+| M2 streaming | 32 tests including 19 adversarial schema sub-cases |
 | Integration | Python/R coexistence, cross-module and repeated-demo hash checks |
 | Release integrity | Every file listed with size and SHA-256 in [`RELEASE_MANIFEST.csv`](RELEASE_MANIFEST.csv); `.gitattributes` keeps bytes identical across platforms |
 

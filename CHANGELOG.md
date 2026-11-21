@@ -13,6 +13,7 @@
 - Merges `main` (`b0ab097`) into the portfolio branch with an ordinary merge commit; both histories are kept.
 - README conflict: the portfolio README is kept (its title already uses no em dash, which was the intent of `8f6eed7`); a RENAL-ROBUST review-status section links the preserved `docs/RENAL_ROBUST_REVIEW_STATUS_2026-11-21.md`.
 - Fixes mis-encoded README characters (`آ·` to `·`, `أ—` to `×`).
+- Corrects the current M2 suite size from 31 to 32 tests (the runner has required 32 since `61887eb`); the benchmark-era count in `modules/m2/PERFORMANCE.md` is left as history.
 - Adds the review-status document to `RELEASE_MANIFEST.csv` and refreshes changed hashes. No code, fixture or scientific status is changed.
 
 ## Existing public history
