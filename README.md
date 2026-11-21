@@ -4,7 +4,7 @@
 
 Renal Safety Atlas investigates how report identity, follow-up versions, ingredient representation and terminology affect reproducible FAERS research. This repository exposes the tested engineering contracts and documents the scale of the private research pipeline. Clinical interpretation and manuscript publication remain on HOLD.
 
-Author: Ahmed Alaqab آ· Licence: [MIT](LICENSE) آ· Cite: [CITATION.cff](CITATION.cff)
+Author: Ahmed Alaqab · Licence: [MIT](LICENSE) · Cite: [CITATION.cff](CITATION.cff)
 
 > **What is public here:** tested Python and base-R quality-control software, run on **synthetic data only**.
 >
@@ -48,7 +48,7 @@ flowchart LR
   end
 ```
 
-More detail: [architecture](docs/ARCHITECTURE.md) آ· [methodology](docs/METHODOLOGY.md) آ· [limitations](docs/LIMITATIONS.md) آ· [project profile](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
+More detail: [architecture](docs/ARCHITECTURE.md) · [methodology](docs/METHODOLOGY.md) · [limitations](docs/LIMITATIONS.md) · [project profile](docs/CLINICAL_DATA_SCIENCE_PROJECT_PROFILE.md).
 
 ## Quick start (synthetic)
 
@@ -81,15 +81,18 @@ These counts describe test coverage. They are not a scientific validation score.
 
 **Checkout integrity:** use a fresh clone if switching from a historical branch causes a manifest mismatch. Preserve local work. See [reproducibility](docs/REPRODUCIBILITY.md).
 
-**Hosted CI:** Hosted validation recorded on 2026-11-10 for `b0d74de83a3212338a39222d4ec6df833b8f8a88`: [full Windows/Ubuntu synthetic suite](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806006151) and [aggregate metrics tests](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806005650) passed. Logs confirm zero failures, R 4.6.1, Python 3.12.10 (Windows) / 3.12.16 (Ubuntu), and all ten metrics tests. Later changes require their own exact-head checks; see [draft PR #3](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/pull/3).
+**Hosted CI:** Hosted validation recorded on 2026-11-10 for `b0d74de83a3212338a39222d4ec6df833b8f8a88`: [full Windows/Ubuntu synthetic suite](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806006151) and [aggregate metrics tests](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/actions/runs/42806005650) passed. Logs confirm zero failures, R 4.6.1, Python 3.12.10 (Windows) / 3.12.16 (Ubuntu), and all ten metrics tests. Later changes require their own exact-head checks; see [PR #3](https://github.com/ahmedalaqab33-source/RENAL_FAERS_2026/pull/3) and the [CI contract](docs/CI_CONTRACT.md).
 
 ## Research competencies demonstrated (with where the evidence is)
 - **Clinical big-data engineering:** partitioned, checkpointed, memory-bounded processing of about 198 M rows on a 16 GB workstation ([evidence](docs/ENGINEERING_AT_SCALE.md)).
 - **Pharmacovigilance methodology:** report vs case units, deleted cases, drug identity, MedDRA era effects ([methodology](docs/METHODOLOGY.md)).
-- **Statistical quality assurance:** an exact 2أ—2 invariant, pre-specified BH families, transparent bootstrap failures, an independent re-implementation.
+- **Statistical quality assurance:** an exact 2×2 invariant, pre-specified BH families, transparent bootstrap failures, an independent re-implementation.
 - **Reproducible research software:** a manifest-verified release, cross-language parity, deterministic outputs.
 
 Not demonstrated or claimed: supervised machine learning, prediction, causal inference, clinical deployment.
+
+## RENAL-ROBUST research review status
+The private RENAL-ROBUST FAERS study is reviewed separately from this synthetic software. Its current documented state is **REVIEWER_2_CONDITIONAL_ACCEPTANCE_DOCUMENTED; FULL_STUDY_SIGNOFF_NOT_ESTABLISHED**: approval of the historical identity-policy package is conditional on verified P08-A1 implementation, a T08b rerun and the remaining sign-offs. Technical collision classifications are not independent human adjudication. See the [review status snapshot (2026-11-21)](docs/RENAL_ROBUST_REVIEW_STATUS_2026-11-21.md). Passing software checks here does not change that status.
 
 ## Limitations
 - FAERS is a spontaneous reporting system: under-reporting, stimulated reporting and missing fields.
@@ -105,4 +108,4 @@ See [limitations](docs/LIMITATIONS.md).
 
 ## Repository guide
 
-[Capabilities](docs/VALIDATED_CAPABILITIES.md) آ· [Reproducibility](docs/REPRODUCIBILITY.md) آ· [Engineering case study](docs/ENGINEERING_AT_SCALE.md) آ· [Contributing](CONTRIBUTING.md) آ· [Security](SECURITY.md) آ· [Changelog](CHANGELOG.md)
+[Capabilities](docs/VALIDATED_CAPABILITIES.md) · [Reproducibility](docs/REPRODUCIBILITY.md) · [Engineering case study](docs/ENGINEERING_AT_SCALE.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
