@@ -35,5 +35,7 @@ def main():
         with tempfile.TemporaryDirectory(prefix='synthetic_ci_',dir=work) as tmp:
             component=Path(tmp)/'component with spaces';rwork=Path(tmp)/'r_work';rwork.mkdir();stage_component(ROOT,component)
             return subprocess.run([sys.executable,'-I',str(component/'tools/run_all.py'),'--output',str(out),'--work-dir',str(rwork),'--rscript',args.rscript],check=False).returncode
-    except (ValueError,OSError,KeyError,csv.Error):print('SYNTHETIC_BOOTSTRAP_ERROR: integrity,source scope,path or interpreter check failed',file=sys.stderr);return 2
+    except (ValueError,OSError,KeyError,csv.Error) as e:
+        print('SYNTHETIC_BOOTSTRAP_ERROR: '+type(e).__name__+': '+str(e),file=sys.stderr)
+        return 2
 if __name__=='__main__':raise SystemExit(main())

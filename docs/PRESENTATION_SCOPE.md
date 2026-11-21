@@ -1,14 +1,7 @@
-# Professional presentation boundary
+# Presentation and evidence boundaries
 
-Describe this component as a portable synthetic count-QC and reproducibility engineering demonstration supporting a broader research project. It offers strict typed count validation,explicit undefined states,cross-language checks,deterministic synthetic outputs,manifest/security controls and a reviewable CI candidate.
+The public repository demonstrates synthetic count QC, sufficient-statistics validation, bounded streaming diagnostics and release integrity. It supports a broader private research programme. Public visibility of earlier modules is established by Git history; publication of this draft branch is authorized by the owner's 2026-11-10 assignment, subject to release gates.
 
-Do not describe it as the full executable research pipeline,real clinical prediction,validated clinical phenotypes,source-data authentication or independent human replication. The component contains no actual study records,reference terminology,licensed crosswalks,scientific figures/manuscript outputs,private authorization evidence or account details. Artificial fixtures are labelled SYNTHETIC / NOT FAERS. Their metric values are software examples,not findings about medicines or patients.
+Describe scale figures as locally reconciled engineering evidence. The sanitized annual counts can be summed publicly; underlying MASTER hashes and data remain private. An independent implementation is not an independent human reviewer. No clinical product, patient-level prediction, full public ETL replay or clinical approval is claimed.
 
-Present actual local test counts separately from hosted CI. The workflow is manual-only and unexecuted on hosted Windows/Ubuntu at this stage. Do not display a passing hosted badge or claim Linux/clean-environment success without the matching authentic run. Ownership,MIT license choice and citation name are owner-confirmed for this private candidate; exact-version public export/push approval remains pending. No grant or DOI is invented here.
-
-Export only exact reviewed component-manifest files. Never export a private staging root,research results,source path inventories,approval documents or local test logs. A later repository README should keep the engineering module's supported scope visibly separate from the broader project's unresolved scientific and governance limitations.
-
-
-## Private M1 integration context
-
-The initial synthetic QC baseline is already public. This new integration remains private and awaits exact-tree update approval. Both code scopes have owner-confirmed MIT-compatible rights. Existing count algorithms and workflow policies are unchanged. M1 has a distinct observed-pair a>0 contract; see M1_CONTRACT.md and ARCHITECTURE.md. The bootstrap now invokes tools/run_all.py to include the existing suite, complete M1 suite and integration checks. Hosted CI is not claimed.
+Export only exact reviewed manifest files. Research records, identifiers, restricted corpora, manuscript drafts and exploratory effect estimates remain excluded. Synthetic software success does not authorize scientific publication. Inspect hosted status on the exact commit before claiming hosted success.

@@ -11,10 +11,14 @@ class Guards(unittest.TestCase):
             p=Path(t);(p/'arbitrary.yml').write_text('name: synthetic');self.assertTrue(q.scan(p))
     def test_only_named_workflow_allowed(self):
         with tempfile.TemporaryDirectory() as t:
-            p=Path(t)/'.github/workflows';p.mkdir(parents=True);(p/'synthetic-qc.yml').write_text('name: synthetic');self.assertFalse(q.scan(Path(t)))
+            p=Path(t)/'.github/workflows';p.mkdir(parents=True)
+            for name in ['synthetic-qc.yml','project-metrics-validation.yml']:
+                (p/name).write_text('name: synthetic')
+            self.assertFalse(q.scan(Path(t)))
     def test_checkout_metadata_excluded_without_git(self):
         with tempfile.TemporaryDirectory() as t:
             source=Path(t)/'source';shutil.copytree(ROOT,source);meta=source/'.git';meta.mkdir();(meta/'SYNTHETIC_METADATA_ONLY.txt').write_text('not a Git initialization')
+            q.verify_manifest(source,source/'RELEASE_MANIFEST.csv')
             dest=Path(t)/'component';b.stage_component(source,dest);self.assertFalse((dest/'.git').exists())
             with (dest/'RELEASE_MANIFEST.csv').open() as h:expected=len(list(csv.DictReader(h)))
             self.assertEqual(q.verify_manifest(dest,dest/'RELEASE_MANIFEST.csv'),expected)

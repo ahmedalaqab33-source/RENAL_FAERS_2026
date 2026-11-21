@@ -1,3 +1,5 @@
+> Current publication status (2026-11-10): this synthetic engineering branch is published as draft PR #3. Historical private-candidate and pending-upload statements below describe earlier checkpoints. See the current [README](../README.md) for exact-commit hosted evidence. Scientific approval remains HOLD.
+
 # Reproduce the synthetic demonstration
 
 **SYNTHETIC / NOT FAERS.** No real research records, references, accounts or network access are required. This is engineering arithmetic, not a scientific pipeline or validated prediction.

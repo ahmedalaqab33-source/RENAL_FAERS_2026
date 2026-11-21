@@ -41,7 +41,9 @@ def main():
             if expected_tests is not None:
                 m=re.search(r'Ran (\d+) tests?',text);testcount=int(m.group(1)) if m else None
             commands.append(dict(label=label,command=cmd,returncode=proc.returncode,seconds=round(time.monotonic()-begin,4),tests=testcount));(out/'executed_commands.json').write_text(json.dumps(commands,indent=2))
-            if proc.returncode or expected_tests is not None and testcount!=expected_tests:raise RuntimeError('Synthetic check failed: '+label)
+            if proc.returncode or expected_tests is not None and testcount!=expected_tests:
+                print('FAILED_SYNTHETIC_LOG_TAIL: '+label+'\n'+text[-4000:],file=sys.stderr)
+                raise RuntimeError('Synthetic check failed: '+label)
             print(label+': PASS_SCOPED')
             return text
         py=sys.executable
@@ -51,6 +53,7 @@ def main():
         execute('r_contract',[rscript,'--vanilla',str(ROOT/'tests/run_contract_tests.R'),str(ROOT),str(out/'r_cases.csv'),str(out/'r_session.txt')])
         execute('runner',[py,'-I',str(ROOT/'tests/run_runner_tests.py'),'--rscript',rscript],36)
         execute('ci_guards',[py,'-I',str(ROOT/'tests/run_ci_guard_tests.py')],8)
+        execute('project_metrics',[py,'-B','-m','unittest','discover','-s',str(ROOT/'tests'),'-p','test_project_metrics.py'],10)
         comparisons=[]
         fixture=read(ROOT/'fixtures/synthetic_counts.csv');rold=read(out/'r_old.csv');assert len(fixture)==len(rold)==3
         for x,y in zip(fixture,rold):
@@ -70,7 +73,7 @@ def main():
         after={f.relative_to(ROOT).as_posix():q.digest(f) for f in ROOT.rglob('*') if f.is_file()}
         if before!=after:raise RuntimeError('Source bytes changed during tests')
         version=execute('r_version',[rscript,'--version']).strip().splitlines()[0]
-        summary=dict(scope='SYNTHETIC ENGINEERING ONLY; not hosted-run or scientific attestation',status='PASS_SCOPED',python_version=sys.version.split()[0],r_version=version,old_python_tests=13,new_python_tests=90,new_R_cases=89,runner_tests=36,ci_guard_tests=8,old_metric_checks=15,new_classification_checks=89,new_output_checks=40,repeat_output_hash_checks=3,failures=0,source_manifest_checks='PASS_SCOPED',outputs_uploaded=False)
+        summary=dict(scope='SYNTHETIC ENGINEERING ONLY; not hosted-run or scientific attestation',status='PASS_SCOPED',python_version=sys.version.split()[0],r_version=version,old_python_tests=13,new_python_tests=90,new_R_cases=89,runner_tests=36,ci_guard_tests=8,project_metrics_tests=10,old_metric_checks=15,new_classification_checks=89,new_output_checks=40,repeat_output_hash_checks=3,failures=0,source_manifest_checks='PASS_SCOPED',outputs_uploaded=False)
         (out/'CI_SUMMARY.json').write_text(json.dumps(summary,sort_keys=True,indent=2)+'\n');print(json.dumps(summary,sort_keys=True));return 0
     except (ValueError,RuntimeError,OSError,AssertionError,csv.Error) as e:print('SYNTHETIC_CI_ERROR: '+str(e),file=sys.stderr);return 2
 if __name__=='__main__':raise SystemExit(main())
